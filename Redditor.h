@@ -46,7 +46,7 @@ namespace CRAW {
             std::string operator[] (const std::string & attribute);
 
             /** 
-             * Follow this Redditor
+             * Follow this Redditor, which is the same as subscribing to their user subreddit
             */
             void follow ();
             /** 
