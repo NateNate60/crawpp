@@ -3,7 +3,6 @@
 #include <vector>
 #include <ctime>
 
-#include "Post.h"
 #include "Reddit.h"
 
 namespace CRAW {

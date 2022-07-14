@@ -3,8 +3,6 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Subreddit.h"
-#include "Comment.h"
 #include "Reddit.h"
 
 namespace CRAW {
