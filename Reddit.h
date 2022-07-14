@@ -1,9 +1,14 @@
 #pragma once
 #include <string>
+#include <ctime>
 
-#include "Redditor.h"
-#include "Subreddit.h"
 namespace CRAW {
+    // Forward-declarations of classes to avoid having header files #include each other
+    class Redditor;
+    class Subreddit;
+    class Post;
+    class Comment;
+
 
     /**
     Represents the user's session with Reddit.
@@ -12,7 +17,41 @@ namespace CRAW {
         private:
             std::string _password;
             std::string _apisecret;
+
+            // Stores the API token
+            std::string _token;
+            // Stores the API token's expiration time
+            time_t _expiration;
+
+            // Stores the modhash. The modhash is used by Reddit to prevent CSRF.
+            std::string modhash;
+
+            // Counts Reddit instances; the RestClient is shut down only when the last instance is destroyed
             static unsigned int _instancecount;
+
+            /**
+             * Get a new API token using the authentication data
+             */
+            void _gettoken ();
+
+            /**
+             * Send a request to the Reddit API
+             * 
+             * @param method The HTTP method to use (e.g. "POST", "GET")
+             * @param targeturl The target URL (e.g. "/api/v1/me")
+             * @param body The data to be sent in the body of the request
+             * @return JSON object representing the server's response
+             */
+            nlohmann::json _sendrequest (const std::string & method, 
+                                         const std::string & targeturl, 
+                                         const std::string & body);
+
+            // All classes that can post to the API are friends
+            // All classes that teach mathematics are enemies
+            friend class Redditor;
+            friend class Post;
+            friend class Comment;
+            friend class Subreddit;
         public:
             // True if authetication info was provided, false if not
             bool authenticated;
@@ -24,20 +63,20 @@ namespace CRAW {
             std::string useragent;
 
             // The user id associated with the current session, empty if not authenticated
-            std::string userid;
+            std::string clientid;
 
             /**
             Passing arguments to the initialiser indicates authenticating (logging in) with Reddit. The credentials are not checked until the first request is made.
             
             @param user_name: The username of the account to authenticate with
             @param password: The password of the account to log in with
-            @param user_id: The user id of the API key to log in with
+            @param client_id: The user id of the API key to log in with
             @param api_secret: The API secret of the key to log in with
             @param user_agent: Any string except empty. It will be used as the user agent and associated with the current session.
             */
             Reddit (const std::string & user_name, 
                     const std::string & password, 
-                    const std::string & user_id, 
+                    const std::string & client_id, 
                     const std::string & api_secret, 
                     const std::string & user_agent);
 
