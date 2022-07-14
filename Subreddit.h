@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <nlohmann/json.hpp>
 
 #include "Reddit.h"
 
@@ -14,6 +15,9 @@ namespace CRAW {
         private:
             Reddit * _redditinstance;
         public:
+            // Stores info about the subreddit
+            nlohmann::json information;
+            
             // The name of the subreddit, not including the r/
             std::string name;
             
@@ -42,20 +46,12 @@ namespace CRAW {
             unsigned int activeusers;
 
             /**
-            Initialises a new Subreddit instance that can only be viewed.
-            In most cases, Reddit.subreddit() should be used instead.
-
-            @param subredditname: The name of the subreddit
-            */ 
-            Subreddit (const std::string & subredditname);
-
-            /**
             Initialises a new Subreddit instance assoicated with a Reddit instance.
 
             @param redditinstance: The Reddit instance to associate
             @param subredditname: The name of the subreddit
             */
-            Subreddit (Reddit * redditinstance, const std::string & subredditname);
+            Subreddit (const std::string & subredditname, Reddit * redditinstance = nullptr);
 
             /**
             The [] operator is used to fetch information about a subreddit. All information is returned as a std::string.

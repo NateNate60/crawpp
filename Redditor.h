@@ -12,8 +12,10 @@ namespace CRAW {
     class Redditor {
         private:
             Reddit * _redditinstance;
-            nlohmann::json _information;
         public:
+            // Stores information about the user
+            nlohmann::json information;
+
             // The user's username, without the u/
             std::string username;
 

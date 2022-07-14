@@ -32,11 +32,11 @@ Redditor::Redditor (const std::string & name, Reddit * redditinstance) {
     awarderkarma = responsejson["awarder_karma"];
     commentkarma = responsejson["comment_karma"];
     postkarma = responsejson["link_karma"];
-    _information = responsejson;
+    information = responsejson;
 }
 
 std::string Redditor::operator[] (const std::string & attribute) {
-    nlohmann::json value = _information[attribute];
+    nlohmann::json value = information[attribute];
     if (value.is_null()) {
         throw std::invalid_argument("Attribute " + attribute + " doesn't exist.");
     }
