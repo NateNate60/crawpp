@@ -12,7 +12,7 @@ namespace CRAW {
     */
     class Subreddit {
         private:
-            const Reddit * _redditinstance;
+            Reddit * _redditinstance;
         public:
             // The name of the subreddit, not including the r/
             std::string name;
@@ -55,7 +55,7 @@ namespace CRAW {
             @param redditinstance: The Reddit instance to associate
             @param subredditname: The name of the subreddit
             */
-            Subreddit (const Reddit * redditinstance, const std::string & subredditname);
+            Subreddit (Reddit * redditinstance, const std::string & subredditname);
 
             /**
             The [] operator is used to fetch information about a subreddit. All information is returned as a std::string.

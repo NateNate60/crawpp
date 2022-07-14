@@ -12,7 +12,7 @@ namespace CRAW {
     */
     class Post {
         private:
-            const Reddit * _redditinstance;
+            Reddit * _redditinstance;
         public:
             // The ID assigned to the post by Reddit
             std::string id;
@@ -54,7 +54,7 @@ namespace CRAW {
             @param redditinstance: The Reddit instance to associate
             @param id: The ID of the post to fetch
             */
-            Post (const Reddit * redditinstance, const std::string & id);
+            Post (Reddit * redditinstance, const std::string & id);
 
             // Returns whether two posts are the same (i.e. have the same id)
             bool operator== (const Post & post);

@@ -11,7 +11,7 @@ namespace CRAW {
     */
     class Redditor {
         private:
-            const Reddit * _redditinstance;
+            Reddit * _redditinstance;
             nlohmann::json _information;
         public:
             // The user's username, without the u/
@@ -36,7 +36,7 @@ namespace CRAW {
             
             @param name: The username of the Redditor
             */
-            Redditor (const std::string & name, const Reddit * redditinstance = nullptr);
+            Redditor (const std::string & name, Reddit * redditinstance = nullptr);
 
             /**
             The [] operator is used to fetch information about a user. All information is returned as a std::string.

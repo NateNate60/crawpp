@@ -12,7 +12,7 @@ namespace CRAW {
     */
     class Comment {
         private:
-            const Reddit * _redditinstance;
+            Reddit * _redditinstance;
         public:
             // The content of the comment
             std::string content;
