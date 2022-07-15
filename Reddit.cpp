@@ -129,7 +129,7 @@ Redditor Reddit::redditor (const std::string & name) {
 Subreddit Reddit::subreddit (const std::string & name) {
     // Associate with the current session only if authenticated
     if (authenticated) {
-        return Subreddit(this, name);
+        return Subreddit(name, this);
     } else {
         return Subreddit(name);
     }

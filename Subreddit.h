@@ -17,7 +17,7 @@ namespace CRAW {
         public:
             // Stores info about the subreddit
             nlohmann::json information;
-            
+
             // The name of the subreddit, not including the r/
             std::string name;
             
@@ -63,9 +63,12 @@ namespace CRAW {
             Fetches posts sorted in the specified way, up to the specified limit (default: 25 + pinned posts if sorting by hot)
 
             @param sort: How to sort the results (default: hot)
-            @param limit: How many posts to fetch (default: 25 + pinned posts if sorting by hot)
+            @param period "hour", "day", "week", "month", "year", or "all". Used when sorting by top or controversial
+            @param limit: How many posts to fetch (default: 25, max: 100)
             */
-            std::vector<Post> posts (const std::string & sort, const unsigned int limit);
+            std::vector<Post> posts (const std::string & sort = "hot",
+                                     const std::string & period = "all",
+                                     const unsigned short limit = 25);
 
             /**
             Make a new post on a subreddit. Returns the newly-made post as a Post instance.
