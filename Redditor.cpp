@@ -20,10 +20,17 @@ Redditor::Redditor (const std::string & name, Reddit * redditinstance) {
             throw NotFoundError("Could not find any user with that username.");
         case 403:
             throw UnauthorisedError("You aren't allowed to do that. Did you block this user?");
-        default:
+        case 200:
             responsejson = nlohmann::json::parse(response.body)["data"];
+            break;
+        default:
+            throw RetrievalError("The server responded with error " + std::to_string(response.code) + " while fetching Redditor information.");
     }
     
+    if (responsejson.is_null()) {
+        throw RetrievalError("The server gave a malformed response when fetching Redditor information.");
+    }
+
     _redditinstance = redditinstance;
     username = responsejson["name"];
     created = responsejson["created"];

@@ -56,4 +56,18 @@ namespace CRAW {
             explicit InvalidInteractionError (const std::string & what_arg);
             explicit InvalidInteractionError (const char * what_arg);
     };
+
+    /**
+     * RetrievalError represents a failed attempt to fetch info from the
+     * server. Whenever the server either response with something in an
+     * unexpected form or an error, RetrievalError will be thrown.
+     * 
+     * This is the most generic form of retrieval error. Use more specific
+     * exceptions when the cause is actually known.
+     */
+    class RetrievalError : public std::runtime_error {
+        public:
+            explicit RetrievalError (const std::string & what_arg);
+            explicit RetrievalError (const char * what_arg);
+    };
 }
