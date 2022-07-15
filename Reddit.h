@@ -44,7 +44,7 @@ namespace CRAW {
              */
             nlohmann::json _sendrequest (const std::string & method, 
                                          const std::string & targeturl, 
-                                         const std::string & body);
+                                         const std::string & body = "");
 
             // All classes that can post to the API are friends
             // All classes that teach mathematics are enemies
