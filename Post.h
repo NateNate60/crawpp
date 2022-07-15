@@ -1,7 +1,7 @@
 #pragma once
 #include <ctime>
 #include <vector>
-#include <unordered_map>
+#include <nlohmann/json.hpp>
 
 #include "Reddit.h"
 
@@ -21,6 +21,9 @@ namespace CRAW {
             std::string authorname;
             // Fetches a Redditor instance for the author of the post
             Redditor author ();
+
+            // The fullname of the post. The fullname is used by Reddit and is a combination of a thing's type and its globally-unique ID.
+            std::string fullname;
 
             // The type of post, such as "link" or "text"
             std::string type;
@@ -47,6 +50,16 @@ namespace CRAW {
             @param id: The ID of the post
             */ 
             Post (const std::string & id);
+
+            /**
+             * Construct a new empty Post object with the given information, in the
+             * form of a Reddit API call response. This constructor expects the "data"
+             * object within the response. Use this to avoid making a duplicate API
+             * call.
+             * 
+             * @param redditinstance The Reddit instance to associate with the post
+             */
+            Post (nlohmann::json & data, Reddit * redditinstance = nullptr);
 
             /**
             Fetch a post with the given ID, associated with a given Reddit instance.
