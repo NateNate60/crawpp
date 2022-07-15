@@ -93,6 +93,7 @@ nlohmann::json Reddit::_sendrequest (const std::string & method,
     }
 
     RestClient::Connection connection = RestClient::Connection ("https://api.reddit.com");
+    connection.FollowRedirects(true);
     connection.AppendHeader("Authorization", "bearer " + _token);
     RestClient::Response response;
     if (method == "GET") {
@@ -138,7 +139,7 @@ Subreddit Reddit::subreddit (const std::string & name) {
 Post Reddit::post (const std::string & id) {
     // Associate with the current session only if authenticated
     if (authenticated) {
-        return Post(this, id);
+        return Post(id, this);
     } else {
         return Post(id);
     }
