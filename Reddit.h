@@ -24,7 +24,7 @@ namespace CRAW {
             time_t _expiration;
 
             // Stores the modhash. The modhash is used by Reddit to prevent CSRF.
-            std::string modhash;
+            std::string _modhash;
 
             // Counts Reddit instances; the RestClient is shut down only when the last instance is destroyed
             static unsigned int _instancecount;
@@ -33,6 +33,13 @@ namespace CRAW {
              * Get a new API token using the authentication data
              */
             void _gettoken ();
+
+            /**
+             * Get a new modhash. Modhashes are used by Reddit to prevent CSRF.
+             * The modhash will eventually expire and this function will need to
+             * be called again to refresh it.
+             */
+            void _getmodhash ();
 
             /**
              * Send a request to the Reddit API

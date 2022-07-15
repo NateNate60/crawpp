@@ -32,8 +32,10 @@ Reddit::Reddit (const std::string & user_name,
     this->_apisecret = api_secret;
     this->_password = password;
     this->authenticated = true;
+    this->_modhash = "";
 
     _gettoken();
+    _getmodhash();
 
 }
 
@@ -83,6 +85,11 @@ void Reddit::_gettoken () {
     _expiration = (time_t)responsejson["expires_in"] + time(nullptr);
 }
 
+void Reddit::_getmodhash () {
+    nlohmann::json response = _sendrequest("GET", "/api/me.json");
+    _modhash = response["data"]["modhash"];
+}
+
 nlohmann::json Reddit::_sendrequest (const std::string & method, 
                                      const std::string & targeturl, 
                                      const std::string & body) {
@@ -95,6 +102,9 @@ nlohmann::json Reddit::_sendrequest (const std::string & method,
     RestClient::Connection connection = RestClient::Connection ("https://api.reddit.com");
     connection.FollowRedirects(true);
     connection.AppendHeader("Authorization", "bearer " + _token);
+    if (_modhash != "") {
+        connection.AppendHeader("X-Modhash", _modhash);
+    }
     RestClient::Response response;
     if (method == "GET") {
         response = connection.get(targeturl);
