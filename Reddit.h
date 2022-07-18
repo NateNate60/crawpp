@@ -5,6 +5,7 @@
 namespace CRAW {
     // Forward-declarations of classes to avoid having header files #include each other
     class Redditor;
+    class Submission;
     class Subreddit;
     class Post;
     class Comment;
