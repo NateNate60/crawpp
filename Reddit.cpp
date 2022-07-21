@@ -20,10 +20,7 @@ Reddit::Reddit (const std::string & user_name,
         throw std::invalid_argument("User agent string must not be empty");
     }
     
-    if (this->_instancecount == 0) {
-        RestClient::init();
-    }
-    this->_instancecount++;
+    RestClient::init();
 
 
     this->username = user_name;
@@ -50,10 +47,6 @@ Reddit::Reddit () {
 }
 
 Reddit::~Reddit () {
-    this->_instancecount--;
-    if (this->_instancecount == 0) {
-        RestClient::disable();
-    }
 }
 
 void Reddit::_gettoken () {
@@ -74,10 +67,7 @@ void Reddit::_gettoken () {
                                                     + "\"}");
     nlohmann::json responsejson = nlohmann::json::parse(response.body);
     if (response.code != 200 || !responsejson["error"].is_null()) {
-        _instancecount--;
-        if (_instancecount == 0) {
-            RestClient::disable();
-        }
+        RestClient::disable();
         throw LoginError("An error occurred when attempting to retrieve a token: " + (std::string)responsejson["message"]);
     }
 
