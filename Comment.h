@@ -12,6 +12,12 @@ namespace CRAW {
     */
     class Comment : public Submission {
         public:
+            /** 
+             * The depth of a comment in the comment tree. 
+             * 0 is a comment made directly on the post.
+             */
+            int depth;
+
             /**
              * Construct a new Comment object and associate it with the
              * given Reddit instance, and with the data provided.
