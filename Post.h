@@ -30,6 +30,9 @@ namespace CRAW {
             // The text of the post's flair
             std::string flairtext;
 
+            // The title of the post
+            std::string title;
+
             /**
              * Construct a new empty Post object with the given information, in the
              * form of a Reddit API call response. This constructor expects the "data"

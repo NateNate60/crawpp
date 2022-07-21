@@ -24,7 +24,10 @@ namespace CRAW {
         protected:
             Reddit * _redditinstance;
         public:
-            // Stores information about the submission
+            /**
+             *  Stores information about the submission.
+             * This stores the API response to avoid duplicate API calls.
+             */
             nlohmann::json information;
 
             // The ID assigned to the submission by Reddit
@@ -40,9 +43,6 @@ namespace CRAW {
 
             // The type of submission, such as "link" or "text"
             std::string type;
-
-            // The title of the submission
-            std::string title;
 
             // The contents of the submission
             std::string content;
@@ -87,9 +87,8 @@ namespace CRAW {
 
             /**
             Delete the submission (as the author)
-            This would be called "delete" if that weren't a reserved keyword in C++.
             */
-            void deletesubmission ();
+            void del ();
 
             /**
             Edit the submission (as the author). Returns a reference to the submission so
