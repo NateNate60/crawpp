@@ -15,9 +15,14 @@ void Post::_init (const nlohmann::json & data, const nlohmann::json & comments) 
     fullname = data["name"];
     title = data["title"];
     posted = static_cast<time_t>(data["created"]);
-    score = static_cast<int>(data["score"]);
+    score = data["score"];
     flairtext = data["link_flair_text"];
     subredditname = data["subreddit"];
+    if (data["edited"].is_number()) {
+        edited = data["edited"];
+    } else {
+        edited = 0;
+    }
 
     if (data["post_hint"].is_null()) {
         // text posts have no hint
