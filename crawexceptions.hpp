@@ -24,8 +24,8 @@ namespace CRAW {
      */
     class CRAWError : public std::runtime_error {
         public:
-            explicit CRAWError (const std::string & what_arg);
-            explicit CRAWError (const char * what_arg);
+            CRAWError (const std::string & what) : std::runtime_error(what) {}
+            CRAWError (const char * what) : std::runtime_error(what) {}
     };
 
     /**
@@ -39,8 +39,8 @@ namespace CRAW {
      */
     class CommunicationError : public CRAWError {
         public:
-            explicit CommunicationError (const std::string & what_arg);
-            explicit CommunicationError (const char * what_arg);
+            CommunicationError (const std::string & what) : CRAWError(what) {}
+            CommunicationError (const char * what) : CRAWError(what) {}
     };
 
     /**
@@ -50,8 +50,8 @@ namespace CRAW {
      */
     class AuthorisationError : public CommunicationError {
         public:
-            explicit AuthorisationError (const std::string & what_arg);
-            explicit AuthorisationError (const char * what_arg);
+            AuthorisationError (const std::string & what) : CommunicationError(what) {}
+            AuthorisationError (const char * what) : CommunicationError(what) {}
     };
 
     /**
@@ -62,8 +62,8 @@ namespace CRAW {
     */
     class NotLoggedInError : public AuthorisationError {
         public:
-            explicit NotLoggedInError (const std::string & what_arg);
-            explicit NotLoggedInError (const char * what_arg);
+            NotLoggedInError (const std::string & what) : AuthorisationError(what) {}
+            NotLoggedInError (const char * what) : AuthorisationError(what) {}
     };
 
     /**
@@ -71,8 +71,8 @@ namespace CRAW {
     */
     class LoginError : public AuthorisationError {
         public:
-            explicit LoginError (const std::string & what_arg);
-            explicit LoginError (const char * what_arg);
+            LoginError (const std::string & what) : AuthorisationError(what) {}
+            LoginError (const char * what) : AuthorisationError(what) {}
     };
 
     /**
@@ -83,8 +83,8 @@ namespace CRAW {
     */
     class UnauthorisedError : public CommunicationError {
         public:
-            explicit UnauthorisedError (const std::string & what_arg);
-            explicit UnauthorisedError (const char * what_arg);
+            UnauthorisedError (const std::string & what) : CommunicationError(what) {}
+            UnauthorisedError (const char * what) : CommunicationError(what) {}
     };
 
     /**
@@ -94,8 +94,8 @@ namespace CRAW {
     */
     class NotFoundError : public CommunicationError {
         public:
-            explicit NotFoundError (const std::string & what_arg);
-            explicit NotFoundError (const char * what_arg);
+            NotFoundError (const std::string & what) : CommunicationError(what) {}
+            NotFoundError (const char * what) : CommunicationError(what) {}
     };
 
     /**
@@ -105,8 +105,8 @@ namespace CRAW {
      */
     class InvalidInteractionError : public CRAWError {
         public:
-            explicit InvalidInteractionError (const std::string & what_arg);
-            explicit InvalidInteractionError (const char * what_arg);
+            InvalidInteractionError (const std::string & what) : CRAWError(what) {}
+            InvalidInteractionError (const char * what) : CRAWError(what) {}
     };
 
     /**
@@ -115,8 +115,8 @@ namespace CRAW {
     */
     class EditingError : public InvalidInteractionError {
         public:
-            explicit EditingError (const std::string & what_arg);
-            explicit EditingError (const char * what_arg);
+            EditingError (const std::string & what = "") : InvalidInteractionError(what) {}
+            EditingError (const char * what) : InvalidInteractionError(what) {}
     };
 
     
