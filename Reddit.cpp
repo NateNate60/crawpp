@@ -99,7 +99,7 @@ nlohmann::json Reddit::_sendrequest (const std::string & method,
         _gettoken();
     }
 
-    RestClient::Connection connection = RestClient::Connection ("https://api.reddit.com");
+    RestClient::Connection connection = RestClient::Connection ("https://oauth.reddit.com");
     connection.FollowRedirects(true);
     connection.AppendHeader("Authorization", "bearer " + _token);
     if (_modhash != "") {
