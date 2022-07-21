@@ -14,8 +14,8 @@ void Post::_init (const nlohmann::json & data, const nlohmann::json & comments) 
     authorname = data["author"];
     fullname = data["name"];
     title = data["title"];
-    posted = (time_t)data["created"];
-    score = (unsigned int)data["score"];
+    posted = static_cast<time_t>(data["created"]);
+    score = static_cast<int>(data["score"]);
     flairtext = data["link_flair_text"];
     subredditname = data["subreddit"];
 
