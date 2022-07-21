@@ -1,7 +1,6 @@
 #pragma once
-#include <ctime>
+#include <nlohmann/json.hpp>
 
-#include "Reddit.h"
 #include "Submission.h"
 
 namespace CRAW {
@@ -12,8 +11,6 @@ namespace CRAW {
     of the parent post.
     */
     class Comment : public Submission {
-        private:
-            
         public:
             /**
              * Construct a new Comment object and associate it with the
@@ -22,6 +19,12 @@ namespace CRAW {
              * @param data The "data" field of the API response for the comment, inside "children"
              */
             Comment (const nlohmann::json & data, Reddit * redditinstance = nullptr);
-
+            
+            /**
+             * Fetch the replies to a comment
+             * 
+             * @return std::vector<Comment> of the comment's replies
+             */
+            std::vector<Comment> replies ();
     };
 }
