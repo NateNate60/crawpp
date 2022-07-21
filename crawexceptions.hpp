@@ -47,14 +47,24 @@ namespace CRAW {
     };
 
     /**
-     * Whenever the user tries to interact with themselves in a way that is
-     * invalid, such as trying to ban themselves or follow themselves, throw
+     * Whenever the user tries to interact with something in a way that is
+     * invalid, such as trying to ban themselves or edit an image post, throw
      * InvalidInteractionError.
      */
     class InvalidInteractionError : public std::runtime_error {
         public:
             explicit InvalidInteractionError (const std::string & what_arg);
             explicit InvalidInteractionError (const char * what_arg);
+    };
+
+    /**
+     * This error should be thrown when the user attempts to edit something
+     * that can't be edited, like someone else's post or an image post.
+    */
+    class EditingError : public InvalidInteractionError {
+        public:
+            explicit EditingError (const std::string & what_arg);
+            explicit EditingError (const char * what_arg);
     };
 
     /**
