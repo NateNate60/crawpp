@@ -57,8 +57,7 @@ namespace CRAW {
             // All classes that can post to the API are friends
             // All classes that teach mathematics are enemies
             friend class Redditor;
-            friend class Post;
-            friend class Comment;
+            friend class Submission;
             friend class Subreddit;
         public:
             // True if authetication info was provided, false if not
