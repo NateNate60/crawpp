@@ -24,11 +24,11 @@ Redditor::Redditor (const std::string & name, Reddit * redditinstance) {
             responsejson = nlohmann::json::parse(response.body)["data"];
             break;
         default:
-            throw RetrievalError("The server responded with error " + std::to_string(response.code) + " while fetching Redditor information.");
+            throw CommunicationError("The server responded with error " + std::to_string(response.code) + " while fetching Redditor information.");
     }
     
     if (responsejson.is_null()) {
-        throw RetrievalError("The server gave a malformed response when fetching Redditor information.");
+        throw CommunicationError("The server gave a malformed response when fetching Redditor information.");
     }
 
     _redditinstance = redditinstance;

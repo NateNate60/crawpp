@@ -67,10 +67,10 @@ std::vector<Post> Subreddit::posts (const std::string & sort,
         case 200:
             break;
         default:
-            throw RetrievalError("The server responded to fetching r/" + name + " posts with error code " + std::to_string(response.code));
+            throw CommunicationError("The server responded to fetching r/" + name + " posts with error code " + std::to_string(response.code));
     }
     if (responsejson.is_null()) {
-        throw RetrievalError("Malformed response from server when fetching r/" + name + " posts.");
+        throw CommunicationError("Malformed response from server when fetching r/" + name + " posts.");
     }
     std::vector<Post> postvector = {};
 

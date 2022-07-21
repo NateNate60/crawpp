@@ -44,11 +44,11 @@ Post::Post (const std::string & id, Reddit * redditinstance) {
         case 200:
             break;
         default:
-            throw RetrievalError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.code));
+            throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.code));
     }
     nlohmann::json responsejson = nlohmann::json::parse(response.body);
     if (responsejson[0]["data"].is_null()) {
-        throw RetrievalError("Received a malformed response from the server when attempting to get post with ID " + id);
+        throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
     }
 
     _init(responsejson[0]["data"], responsejson[1]["data"]["children"]);
@@ -72,11 +72,11 @@ std::vector<Comment> Post::comments (const std::string & sort, const unsigned in
             case 200:
                 break;
             default:
-                throw RetrievalError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.code));
+                throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.code));
         }
         nlohmann::json responsejson = nlohmann::json::parse(response.body)[1]["data"]["children"];
         if (responsejson.is_null()) {
-            throw RetrievalError("Received a malformed response from the server when attempting to get post with ID " + id);
+            throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
         }
         _comments = responsejson;
     }
