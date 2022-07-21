@@ -9,7 +9,7 @@ namespace CRAW {
     Models a Reddit submission. Post and Comment
     inherit from this class.
 
-    This class is virtual and cannot be instantiated.
+    This class should not be directly instantiated.
     */
     class Submission {
         private:
@@ -58,9 +58,6 @@ namespace CRAW {
 
             // The time that the submission was edited, or 0 if never
             time_t edited;
-
-            // Pure virtual destructor to make this class abstract
-            virtual ~Submission() = 0;
 
             /**
             Reply to a submission. Returns the new comment.
