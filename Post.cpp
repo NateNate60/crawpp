@@ -1,5 +1,5 @@
 #include <nlohmann/json.hpp>
-#include <restclient-cpp/connection.h>
+#include <cpr/cpr.h>
 
 #include "crawexceptions.hpp"
 #include "Post.h"
@@ -37,11 +37,8 @@ void Post::_init (const nlohmann::json & data, const nlohmann::json & comments) 
 
 Post::Post (const std::string & id, Reddit * redditinstance) {
 
-    // we need to use Connection rather than the simple ones because we need to follow redirects
-    RestClient::Connection connection = RestClient::Connection("https://api.reddit.com");
-    connection.FollowRedirects(true);
-    RestClient::Response response = connection.get("/" + id);
-    switch (response.code) {
+    cpr::Response response = cpr::Get(cpr::Url("https://api.reddit.com/" + id));
+    switch (response.status_code) {
         case 404:
             throw NotFoundError("No such post with ID " + id);
         case 403:
@@ -49,9 +46,9 @@ Post::Post (const std::string & id, Reddit * redditinstance) {
         case 200:
             break;
         default:
-            throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.code));
+            throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.status_code));
     }
-    nlohmann::json responsejson = nlohmann::json::parse(response.body);
+    nlohmann::json responsejson = nlohmann::json::parse(response.text);
     if (responsejson[0]["data"].is_null()) {
         throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
     }
@@ -65,11 +62,8 @@ Post::Post (nlohmann::json & data, Reddit * redditinstance) {
 
 std::vector<Comment> Post::comments (const std::string & sort, const unsigned int limit) {
     if (_comments.is_null()) {
-        // we need to use Connection rather than the simple ones because we need to follow redirects
-        RestClient::Connection connection = RestClient::Connection("https://api.reddit.com");
-        connection.FollowRedirects(true);
-        RestClient::Response response = connection.get("/" + id);
-        switch (response.code) {
+        cpr::Response response = cpr::Get(cpr::Url("https://api.reddit.com"));
+        switch (response.status_code) {
             case 404:
                 throw NotFoundError("No such post with ID " + id);
             case 403:
@@ -77,9 +71,9 @@ std::vector<Comment> Post::comments (const std::string & sort, const unsigned in
             case 200:
                 break;
             default:
-                throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.code));
+                throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.status_code));
         }
-        nlohmann::json responsejson = nlohmann::json::parse(response.body)[1]["data"]["children"];
+        nlohmann::json responsejson = nlohmann::json::parse(response.text)[1]["data"]["children"];
         if (responsejson.is_null()) {
             throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
         }

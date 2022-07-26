@@ -1,6 +1,7 @@
-#include <restclient-cpp/connection.h>
 #include <nlohmann/json.hpp>
+#include <cpr/cpr.h>
 #include <stdexcept>
+#include <iostream>
 
 #include "Reddit.h"
 #include "Subreddit.h"
@@ -19,9 +20,6 @@ Reddit::Reddit (const std::string & user_name,
     if (user_agent == "") {
         throw std::invalid_argument("User agent string must not be empty");
     }
-    
-    RestClient::init();
-
 
     this->username = user_name;
     this->useragent = user_agent;
@@ -46,9 +44,6 @@ Reddit::Reddit () {
     this->_token = "";
 }
 
-Reddit::~Reddit () {
-}
-
 void Reddit::_gettoken () {
 
     if (_token != "" && _expiration > time(nullptr) + 5) {
@@ -56,19 +51,15 @@ void Reddit::_gettoken () {
         return;
     }
 
-    RestClient::Connection connection = RestClient::Connection ("https://www.reddit.com/api/v1/access_token");
-    connection.SetBasicAuth(clientid, _apisecret);
-    connection.SetUserAgent(useragent);
-    RestClient::Response response = connection.post("/", 
-                                                    "{\"grant_type\": \"password\", \"username\": \"" +
-                                                    username +
-                                                    "\", \"password\": \"" +
-                                                    _password
-                                                    + "\"}");
-    nlohmann::json responsejson = nlohmann::json::parse(response.body);
-    if (response.code != 200 || !responsejson["error"].is_null()) {
-        RestClient::disable();
-        throw LoginError("An error occurred when attempting to retrieve a token: " + (std::string)responsejson["message"]);
+    cpr::Response response = cpr::Post(cpr::Url{"https://www.reddit.com/api/v1/access_token"},
+                                       cpr::Authentication{clientid, _apisecret, cpr::AuthMode::BASIC},
+                                       cpr::Payload{{"grant_type", "password"}, {"username", username}, {"password", _password}},
+                                       cpr::Header{{"User-Agent", useragent}},
+                                       cpr::Ssl(cpr::ssl::TLSv1_2())); // this might otherwise default to TLS 1.0
+    nlohmann::json responsejson = nlohmann::json::parse(response.text);
+    if (response.status_code != 200 || !responsejson["error"].is_null()) {
+        std::string errormessage = responsejson["error"];
+        throw LoginError("An error occurred when attempting to retrieve a token: " + errormessage);
     }
 
     _token = responsejson["access_token"];
@@ -77,7 +68,8 @@ void Reddit::_gettoken () {
 
 void Reddit::_getmodhash () {
     nlohmann::json response = _sendrequest("GET", "/api/me.json");
-    _modhash = response["data"]["modhash"];
+    std::cout << response.dump() << std::endl;
+    _modhash = response[1]["data"]["modhash"];
 }
 
 nlohmann::json Reddit::_sendrequest (const std::string & method, 
@@ -89,25 +81,29 @@ nlohmann::json Reddit::_sendrequest (const std::string & method,
         _gettoken();
     }
 
-    RestClient::Connection connection = RestClient::Connection ("https://oauth.reddit.com");
-    connection.FollowRedirects(true);
-    connection.AppendHeader("Authorization", "bearer " + _token);
+    // this might otherwise default to TLS 1.0. TLS 1.2+ is more secure
+    cpr::SslOptions tls = cpr::Ssl(cpr::ssl::TLSv1_2());
+
+    cpr::Header header;
     if (_modhash != "") {
-        connection.AppendHeader("X-Modhash", _modhash);
+        header = {{"User-Agent", useragent}, {"X-Modhash", _modhash}, {"Authorization", "bearer " + _token}};
+    } else {
+        header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
     }
-    RestClient::Response response;
+    cpr::Url url = "https://oauth.reddit.com" + targeturl;
+    cpr::Response response;
     if (method == "GET") {
-        response = connection.get(targeturl);
+        response = cpr::Get(url, header, tls);
     } else if (method == "POST") {
-        response = connection.post(targeturl, body);
+        response = cpr::Post(url, header, cpr::Body{body}, tls);
     } else if (method == "PUT") {
-        response = connection.put(targeturl, body);
+        response = cpr::Put(url, header, cpr::Body{body}, tls);
     } else if (method == "DELETE") {
-        response = connection.del(targeturl);
+        response = cpr::Delete(url, header, tls);
     } else {
         throw std::invalid_argument(method + " is not a recognised HTTP method.");
     }
-    return nlohmann::json::parse(response.body);
+    return nlohmann::json::parse(response.text);
 }
 
 

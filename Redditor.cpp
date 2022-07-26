@@ -1,5 +1,4 @@
-#include <restclient-cpp/restclient.h>
-#include <restclient-cpp/connection.h>
+#include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 
 #include "Redditor.h"
@@ -14,17 +13,17 @@ Redditor::Redditor (const std::string & name, Reddit * redditinstance) {
     url += name;
     url += "/about.api";
 
-    RestClient::Response response = RestClient::get(url);
-    switch (response.code){
+    cpr::Response response = cpr::Get(cpr::Url(url), cpr::Ssl(cpr::ssl::TLSv1_2()));
+    switch (response.status_code){
         case 404:
             throw NotFoundError("Could not find any user with that username.");
         case 403:
             throw UnauthorisedError("You aren't allowed to do that. Did you block this user?");
         case 200:
-            responsejson = nlohmann::json::parse(response.body)["data"];
+            responsejson = nlohmann::json::parse(response.text)["data"];
             break;
         default:
-            throw CommunicationError("The server responded with error " + std::to_string(response.code) + " while fetching Redditor information.");
+            throw CommunicationError("The server responded with error " + std::to_string(response.status_code) + " while fetching Redditor information.");
     }
     
     if (responsejson.is_null()) {
