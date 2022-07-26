@@ -27,10 +27,8 @@ Reddit::Reddit (const std::string & user_name,
     this->_apisecret = api_secret;
     this->_password = password;
     this->authenticated = true;
-    this->_modhash = "";
 
     _gettoken();
-    _getmodhash();
 
 }
 
@@ -66,12 +64,6 @@ void Reddit::_gettoken () {
     _expiration = (time_t)responsejson["expires_in"] + time(nullptr);
 }
 
-void Reddit::_getmodhash () {
-    nlohmann::json response = _sendrequest("GET", "/api/me.json");
-    std::cout << response.dump() << std::endl;
-    _modhash = response[1]["data"]["modhash"];
-}
-
 nlohmann::json Reddit::_sendrequest (const std::string & method, 
                                      const std::string & targeturl, 
                                      const std::string & body) {
@@ -85,11 +77,8 @@ nlohmann::json Reddit::_sendrequest (const std::string & method,
     cpr::SslOptions tls = cpr::Ssl(cpr::ssl::TLSv1_2());
 
     cpr::Header header;
-    if (_modhash != "") {
-        header = {{"User-Agent", useragent}, {"X-Modhash", _modhash}, {"Authorization", "bearer " + _token}};
-    } else {
-        header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
-    }
+    header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
+    
     cpr::Url url = "https://oauth.reddit.com" + targeturl;
     cpr::Response response;
     if (method == "GET") {
