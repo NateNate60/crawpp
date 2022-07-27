@@ -66,7 +66,7 @@ namespace CRAW {
             @param distinguish: Whether to distinguish as a moderator
             @return The Comment that was left as a reply
             */
-            Comment reply (std::string & contents, bool distinguish = false); 
+            Comment reply (const std::string & contents, bool distinguish = false); 
 
             /**
             Returns the subreddit that the submission was made in

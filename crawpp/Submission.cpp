@@ -9,7 +9,7 @@
 #include "crawpp/crawexceptions.hpp"
 
 namespace CRAW {
-    Comment Submission::reply (std::string & contents, bool distinguish) {
+    Comment Submission::reply (const std::string & contents, bool distinguish) {
         if (_redditinstance == nullptr) {
             throw NotLoggedInError("You must be logged in to leave a reply.");
         }
