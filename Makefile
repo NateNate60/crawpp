@@ -19,10 +19,10 @@ Comment.o: Comment.cpp Comment.h
 a.out: test.cpp libcrawpp.a
 	g++ -g -I. -L. test.cpp -lcrawpp -lcpr --std=c++17
 
-install: libcrawpp.a Reddit.h Redditor.h Subreddit.h Post.h Comment.h
+install: libcrawpp.a Reddit.h Redditor.h Subreddit.h Post.h Comment.h craw.h
 	cp libcrawpp.a /usr/local/lib
 	mkdir /usr/local/include/crawpp
-	cp Reddit.h Redditor.h Subreddit.h Post.h Comment.h /usr/local/include/crawpp
+	cp Reddit.h Redditor.h Subreddit.h Post.h Comment.h craw.h /usr/local/include/crawpp
 	ldconfig
 	echo "Done"
 
