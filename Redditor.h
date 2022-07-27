@@ -16,6 +16,9 @@ namespace CRAW {
             // Stores information about the user
             nlohmann::json information;
 
+            // The user's fullname. The fullname is used internally by Reddit.
+            std::string fullname;
+
             // The user's username, without the u/
             std::string username;
 
