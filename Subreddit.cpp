@@ -1,8 +1,6 @@
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 
-#include <iostream>
-
 #include "Subreddit.h"
 #include "Post.h"
 #include "Redditor.h"
