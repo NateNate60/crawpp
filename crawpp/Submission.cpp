@@ -2,11 +2,11 @@
 #include <string>
 #include <cassert>
 
-#include "Reddit.h"
-#include "Comment.h"
-#include "Submission.h"
-#include "Subreddit.h"
-#include "crawexceptions.hpp"
+#include "crawpp/Reddit.h"
+#include "crawpp/Comment.h"
+#include "crawpp/Submission.h"
+#include "crawpp/Subreddit.h"
+#include "crawpp/crawexceptions.hpp"
 
 namespace CRAW {
     Comment Submission::reply (std::string & contents, bool distinguish) {

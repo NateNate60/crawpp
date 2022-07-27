@@ -1,7 +1,7 @@
 #include <nlohmann/json.hpp>
 
-#include "Reddit.h"
-#include "Comment.h"
+#include "crawpp/Reddit.h"
+#include "crawpp/Comment.h"
 
 namespace CRAW {
     Comment::Comment (const nlohmann::json & data, Reddit * redditinstance) {

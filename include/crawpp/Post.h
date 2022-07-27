@@ -3,8 +3,8 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
-#include "Reddit.h"
-#include "Submission.h"
+#include "crawpp/Reddit.h"
+#include "crawpp/Submission.h"
 
 namespace CRAW {
 

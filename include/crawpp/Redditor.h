@@ -3,7 +3,7 @@
 #include <ctime>
 #include <nlohmann/json.hpp>
 
-#include "Reddit.h"
+#include "crawpp/Reddit.h"
 
 namespace CRAW {
     /**

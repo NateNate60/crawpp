@@ -1,8 +1,8 @@
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 
-#include "Redditor.h"
-#include "crawexceptions.hpp"
+#include "crawpp/Redditor.h"
+#include "crawpp/crawexceptions.hpp"
 
 using namespace CRAW;
 

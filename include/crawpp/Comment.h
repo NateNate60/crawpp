@@ -1,7 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
 
-#include "Submission.h"
+#include "crawpp/Submission.h"
 
 namespace CRAW {
     /**

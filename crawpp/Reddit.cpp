@@ -2,12 +2,12 @@
 #include <cpr/cpr.h>
 #include <stdexcept>
 
-#include "Reddit.h"
-#include "Subreddit.h"
-#include "Post.h"
-#include "Redditor.h"
-#include "Comment.h"
-#include "crawexceptions.hpp"
+#include "crawpp/Reddit.h"
+#include "crawpp/Subreddit.h"
+#include "crawpp/Post.h"
+#include "crawpp/Redditor.h"
+#include "crawpp/Comment.h"
+#include "crawpp/crawexceptions.hpp"
 
 using namespace CRAW;
 

@@ -1,10 +1,10 @@
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 
-#include "Subreddit.h"
-#include "Post.h"
-#include "Redditor.h"
-#include "crawexceptions.hpp"
+#include "crawpp/Subreddit.h"
+#include "crawpp/Post.h"
+#include "crawpp/Redditor.h"
+#include "crawpp/crawexceptions.hpp"
 
 using namespace CRAW;
 
