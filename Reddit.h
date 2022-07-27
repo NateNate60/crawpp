@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <ctime>
@@ -42,6 +43,18 @@ namespace CRAW {
             nlohmann::json _sendrequest (const std::string & method, 
                                          const std::string & targeturl, 
                                          const std::string & body = "");
+
+            /**
+             * Send a request to the Reddit API
+             * 
+             * @param method The HTTP method to use (e.g. "POST", "GET")
+             * @param targeturl The target URL (e.g. "/api/v1/me")
+             * @param body The data to be sent in the body of the request
+             * @return JSON object representing the server's response
+             */
+            nlohmann::json _sendrequest (const std::string & method, 
+                                         const std::string & targeturl, 
+                                         const cpr::Payload &);
 
             // All classes that can post to the API are friends
             // All classes that teach mathematics are enemies

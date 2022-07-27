@@ -1,7 +1,6 @@
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 #include <stdexcept>
-#include <iostream>
 
 #include "Reddit.h"
 #include "Subreddit.h"
@@ -92,8 +91,51 @@ nlohmann::json Reddit::_sendrequest (const std::string & method,
     } else {
         throw std::invalid_argument(method + " is not a recognised HTTP method.");
     }
+    switch (response.status_code) {
+        case 404:
+            throw NotFoundError("Server responded with HTTP 404 (Not Found)");
+        case 403:
+            throw UnauthorisedError("Server responded with HTTP 403 (Unauthorised)");
+        case 200:
+            return nlohmann::json::parse(response.text);
+        default:
+            throw CommunicationError("Server responded with error code " + response.status_code);
+    }
+
+    
+}
+
+nlohmann::json Reddit::_sendrequest (const std::string & method, 
+                                     const std::string & targeturl, 
+                                     const cpr::Payload & body) {
+
+    if (time(nullptr) >= _expiration - 5) {
+        // the token is expiring soon, get another one
+        _gettoken();
+    }
+
+    // this might otherwise default to TLS 1.0. TLS 1.2+ is more secure
+    cpr::SslOptions tls = cpr::Ssl(cpr::ssl::TLSv1_2());
+
+    cpr::Header header;
+    header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
+    
+    cpr::Url url = "https://oauth.reddit.com" + targeturl;
+    cpr::Response response;
+    if (method == "GET") {
+        response = cpr::Get(url, header, tls);
+    } else if (method == "POST") {
+        response = cpr::Post(url, header, body, tls);
+    } else if (method == "PUT") {
+        response = cpr::Put(url, header, body, tls);
+    } else if (method == "DELETE") {
+        response = cpr::Delete(url, header, tls);
+    } else {
+        throw std::invalid_argument(method + " is not a recognised HTTP method.");
+    }
     return nlohmann::json::parse(response.text);
 }
+
 
 
 Redditor Reddit::me () {
