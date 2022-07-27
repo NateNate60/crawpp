@@ -11,6 +11,10 @@ namespace CRAW {
     |   |_NotFoundError
     |_InvalidInteractionError
     |   |_EditingError
+    |   |_PostingError
+    |   |_ModerationError
+    |   |   |_BanError
+    |   |      |_BanDurationError
     */
 
 
@@ -44,7 +48,7 @@ namespace CRAW {
     };
 
     /**
-     * Whenever the user is either not authenticated or not authorised to
+     * Whenever the user is not authorised to
      * do something, AuthorisationError should be thrown.
      * 
      */
@@ -119,5 +123,42 @@ namespace CRAW {
             EditingError (const char * what) : InvalidInteractionError(what) {}
     };
 
+    /**
+     * When the user makes a malformed attempt to post something, PostingError is thrown
+     */
+    class PostingError : public InvalidInteractionError {
+        public:
+            PostingError (const std::string & what = "") : InvalidInteractionError(what) {}
+            PostingError (const char * what) : InvalidInteractionError(what) {}
+    };
+
+    /**
+     * When the user makes an invalid attempt to moderate something.
+     * Note that unauthroised moderation throws AuthorisationError instead.
+     */
+    class ModerationError : public InvalidInteractionError {
+        public:
+            ModerationError (const std::string & what = "") : InvalidInteractionError(what) {}
+            ModerationError (const char * what) : InvalidInteractionError(what) {}
+    };
     
+    /**
+     * When the user makes an invalid attempt to ban someone, throw BanError.
+     */
+    class BanError : public ModerationError {
+        public:
+            BanError (const std::string & what = "") : ModerationError(what) {}
+            BanError (const char * what) : ModerationError(what) {}
+    };
+
+    /**
+     * If the user attempts to ban someone for a duration fewer than 0 days or
+     * more than 999 days, BanDurationError is thrown. Note that a 0-day ban
+     * is a permanent ban.
+     */
+    class BanDurationError : public BanError {
+        public:
+            BanDurationError (const std::string & what = "") : BanError(what) {}
+            BanDurationError (const char * what) : BanError(what) {}
+    };
 }
