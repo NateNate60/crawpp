@@ -3,10 +3,45 @@
 #include <vector>
 #include <ctime>
 #include <nlohmann/json.hpp>
+#include <string>
 
 #include "Reddit.h"
 
 namespace CRAW {
+
+    /**
+     * @brief A structure representing the options for a post, containing
+     * information such as the flair or whether the post is NSFW or 
+     * contains spoilers. Default values are sane.
+     */
+    struct PostOptions {
+        bool ad;
+        std::string collection_id;
+        time_t event_start;
+        time_t event_end;
+        std::string event_timezone;
+        std::string flair_id;
+        std::string flair_text;
+        std::string type;
+        bool nsfw;
+        bool resubmit;
+        bool get_inbox_replies;
+        bool spoiler;
+        PostOptions () {
+            ad = false;
+            collection_id = "";
+            event_start = 0;
+            event_end = 0;
+            event_timezone = "";
+            flair_id = "";
+            flair_text = "";
+            type = "text";
+            nsfw = false;
+            resubmit = false;
+            get_inbox_replies = true;
+            spoiler = false;
+        }
+    };
 
     /**
     Represents a subreddit
@@ -40,10 +75,10 @@ namespace CRAW {
             time_t created;
 
             // The number of subscribers (members) that the subreddit has
-            unsigned int subscribers;
+            int subscribers;
 
             // How many people on the subreddit are here now
-            unsigned int activeusers;
+            int activeusers;
 
             /**
             Initialises a new Subreddit instance assoicated with a Reddit instance.
@@ -71,36 +106,77 @@ namespace CRAW {
                                      const unsigned short limit = 25);
 
             /**
-            Make a new post on a subreddit. Returns the newly-made post as a Post instance.
-            To set post flair, call flair() on the returned Post instance, e.g. 
-            Subreddit.post().flair()
-
-            @param title: The title of the post
-            @param contents: The contents of the post
-            @param distinguish: Whether to distinguish as a moderator
-            @param pin: Whether to pin the post at the top of the subreddit
-            */
+             * @brief Make a new post on a subreddit. Returns the newly-made post as a Post instance
+             * 
+             * @param title The title of the post
+             * @param contents The contents of the post
+             * @param ad Whether the post is an advert
+             * @param collection_id The UUID of the collection to be associated with the post
+             * @param event_start The local time the event starts
+             * @param event_end The local time the event ends
+             * @param event_tz The time zone of the event, such as "America/Los_Angeles"
+             * @param flair_id The ID of the flair to use
+             * @param flair_text The text to put in the flair (max 64 chars)
+             * @param type "text" for text posts, "link" for everything else
+             * @param nsfw Whether to mark the post as not safe for work
+             * @param resubmit 
+             * @param inbox_replies Whether replies should be sent to the inbox
+             * @param spoiler Whether to mark the post as containing spoilers
+             * @return Post instance of the newly-created post
+             */
             Post post (const std::string & title,
                        const std::string & contents,
-                       bool distinguish,
-                       bool pin);
+                       const PostOptions & options = PostOptions());
             
             /**
             Subscribe to a subreddit. Returns a reference to the subreddit so that
             calls can be chained together
+
+            @param skip_initial_defaults New accounts are automatically subscribed to a few popular
+            subreddits. Should this behaviour be suppressed? (default: true)
             */
-            Subreddit & subscribe ();
+            Subreddit & subscribe (bool skip_initial_defaults = true);
+
+            /**
+             * @brief Unsubscribe from a subreddit
+             * 
+             * @return Subreddit& A reference to the Subreddit instance for the subreddit
+             */
+            Subreddit & unsubscribe ();
 
             /**
             Ban a user from a subreddit.
 
             @param user The user to ban from the subreddit
-            @param reason The reason for the ban
+            @param message A message to send to the user
             @param length The length of the ban, in days (0 = permanant, max 999)
+            @param reason The reason for the ban (e.g. "claiming DC is better than Marvel")
+            @param modnote A note to leave for the other mods (max 300 characters)
             @return A reference to the Subreddit instance for the subreddit that the user was just banned from
             */
-            Subreddit & ban (const Redditor & user, std::string reason, unsigned short length);
+            Subreddit & ban (const Redditor & user,
+                             const std::string & message,
+                             int length,
+                             const std::string & reason,
+                             const std::string & modnote = "");
+            
+            /**
+            Ban a user from a subreddit.
 
+            @param user The username of the user to ban from the subreddit
+            @param message A message to send to the user
+            @param length The length of the ban, in days (0 = permanant, max 999)
+            @param reason The reason for the ban (e.g. "claiming Marvel is better than DC")
+            @param modnote A note to leave for the other mods (max 300 characters)
+            @return A reference to the Subreddit instance for the subreddit that the user was just banned from
+            */
+            Subreddit & ban (const std::string & username,
+                             const std::string & message,
+                             int length,
+                             const std::string & reason,
+                             const std::string & modnote = "");
+            
+            
             /**
              * Unbans a user from a subreddit.
              * 
@@ -109,5 +185,14 @@ namespace CRAW {
              */
             Subreddit & unban (const Redditor & user);
 
+            /**
+             * Unbans a user from a subreddit.
+             * 
+             * @param user The username of the user to unban from the subreddit
+             * @param fullname The fullname of the user to be unbanned. If not provided, then it will be fetched
+             * based on the username.
+             * @return A reference to the Subreddit instance for the subreddit that the user was just banned form
+             */
+            Subreddit & unban (const std::string & username, const std::string & fullname = "");
     };
 }
