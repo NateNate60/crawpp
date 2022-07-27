@@ -1,25 +1,37 @@
-libcrawpp.a: Reddit.o Redditor.o Subreddit.o Post.o Comment.o
-	ar crf libcrawpp.a Reddit.o Redditor.o Subreddit.o Post.o Comment.o
+VERSION = 0.1alpha-1
 
-Reddit.o: Reddit.cpp Reddit.h
-	g++ -g -c Reddit.cpp -lcpr --std=c++17
+INCLUDEPATH = ./include
+STANDARD = c++17
+SOURCE = ./crawpp
+OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o
+HEADERS = $(INCLUDE)/Award.h  $(INCLUDE)/Comment.h  $(INCLUDE)/crawexceptions.hpp  $(INCLUDE)/craw.h  $(INCLUDE)/Post.h  $(INCLUDE)/Reddit.h  $(INCLUDE)/Redditor.h  $(INCLUDE)/Submission.h  $(INCLUDE)/Subreddit.h
+INCLUDE = $(INCLUDEPATH)/crawpp
+ARGS = -g -c -I$(INCLUDEPATH) -L$(SOURCE) --std=$(STANDARD)
 
-Redditor.o: Redditor.cpp Redditor.h
-	g++ -g -c Redditor.cpp -lcpr --std=c++17
+PACKAGE = libcrawpp_$(VERSION)_amd64
 
-Subreddit.o: Subreddit.cpp Subreddit.h
-	g++ -g -c Subreddit.cpp -lcpr --std=c++17
+libcrawpp.a: $(OBJECTS) $(INCLUDE)/crawexceptions.hpp
+	ar crf libcrawpp.a $(OBJECTS)
 
-Post.o: Post.cpp Post.h
-	g++ -g -c Post.cpp -lcpr --std=c++17
+Reddit.o: $(SOURCE)/Reddit.cpp $(INCLUDE)/Reddit.h $(INCLUDE)/crawexceptions.hpp
+	g++ $(ARGS) $(SOURCE)/Reddit.cpp -lcpr
 
-Comment.o: Comment.cpp Comment.h
-	g++ -g -c Comment.cpp -lcpr --std=c++17
+Redditor.o: $(SOURCE)/Redditor.cpp $(INCLUDE)/Redditor.h $(INCLUDE)/crawexceptions.hpp
+	g++ $(ARGS) $(SOURCE)/Redditor.cpp -lcpr
+
+Subreddit.o: $(SOURCE)/Subreddit.cpp $(INCLUDE)/Subreddit.h $(INCLUDE)/crawexceptions.hpp
+	g++ $(ARGS) $(SOURCE)/Subreddit.cpp -lcpr
+
+Post.o: $(SOURCE)/Post.cpp $(INCLUDE)/Post.h $(INCLUDE)/crawexceptions.hpp
+	g++ $(ARGS) $(SOURCE)/Post.cpp -lcpr
+
+Comment.o: $(SOURCE)/Comment.cpp $(INCLUDE)/Comment.h $(INCLUDE)/crawexceptions.hpp
+	g++ $(ARGS) $(SOURCE)/Comment.cpp -lcpr
 
 a.out: test.cpp libcrawpp.a
-	g++ -g -I. -L. test.cpp -lcrawpp -lcpr --std=c++17
+	g++ $(ARGS) test.cpp -lcrawpp -lcpr
 
-install: libcrawpp.a Reddit.h Redditor.h Subreddit.h Post.h Comment.h craw.h
+install: libcrawpp.a
 	cp libcrawpp.a /usr/local/lib
 	mkdir /usr/local/include/crawpp
 	cp Reddit.h Redditor.h Subreddit.h Post.h Comment.h craw.h /usr/local/include/crawpp
@@ -31,3 +43,13 @@ remove:
 	rm /usr/local/lib/libcrawpp.a
 	ldconfig
 	echo "Done"
+
+debpackage: libcrawpp.a $(HEADERS)
+	mkdir $(PACKAGE)
+	mkdir $(PACKAGE)/usr/local/lib -p
+	cp $(INCLUDE) $(PACKAGE)/usr/local/ -r
+	cp libcrawpp.a $(PACKAGE)/usr/local/lib
+	mkdir $(PACKAGE)/DEBIAN
+	cp control $(PACKAGE)/DEBIAN
+	dpkg-deb --build --root-owner-group $(PACKAGE)
+	rm $(PACKAGE) -r
