@@ -3,7 +3,7 @@ VERSION = 0.1alpha-1
 INCLUDEPATH = ./include
 STANDARD = c++17
 SOURCE = ./crawpp
-OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o
+OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o Submission.o
 HEADERS = $(INCLUDE)/Award.h  $(INCLUDE)/Comment.h  $(INCLUDE)/crawexceptions.hpp  $(INCLUDE)/craw.h  $(INCLUDE)/Post.h  $(INCLUDE)/Reddit.h  $(INCLUDE)/Redditor.h  $(INCLUDE)/Submission.h  $(INCLUDE)/Subreddit.h
 INCLUDE = $(INCLUDEPATH)/crawpp
 ARGS = -g -c -I$(INCLUDEPATH) -L$(SOURCE) --std=$(STANDARD)
@@ -14,22 +14,25 @@ libcrawpp.a: $(OBJECTS) $(INCLUDE)/crawexceptions.hpp
 	ar crf libcrawpp.a $(OBJECTS)
 
 Reddit.o: $(SOURCE)/Reddit.cpp $(INCLUDE)/Reddit.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Reddit.cpp -lcpr
+	g++ $(ARGS) $(SOURCE)/Reddit.cpp
 
 Redditor.o: $(SOURCE)/Redditor.cpp $(INCLUDE)/Redditor.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Redditor.cpp -lcpr
+	g++ $(ARGS) $(SOURCE)/Redditor.cpp
 
 Subreddit.o: $(SOURCE)/Subreddit.cpp $(INCLUDE)/Subreddit.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Subreddit.cpp -lcpr
+	g++ $(ARGS) $(SOURCE)/Subreddit.cpp
 
 Post.o: $(SOURCE)/Post.cpp $(INCLUDE)/Post.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Post.cpp -lcpr
+	g++ $(ARGS) $(SOURCE)/Post.cpp
 
 Comment.o: $(SOURCE)/Comment.cpp $(INCLUDE)/Comment.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Comment.cpp -lcpr
+	g++ $(ARGS) $(SOURCE)/Comment.cpp
+
+Submission.o: $(SOURCE)/Submission.cpp $(INCLUDE)/Submission.h $(INCLUDE)/crawexceptions.hpp
+	g++ $(ARGS) $(SOURCE)/Submission.cpp
 
 a.out: test.cpp libcrawpp.a
-	g++ $(ARGS) test.cpp -lcrawpp -lcpr
+	g++ $(ARGS) test.cpp -lcrawpp
 
 install: libcrawpp.a
 	cp libcrawpp.a /usr/local/lib
@@ -47,7 +50,7 @@ remove:
 debpackage: libcrawpp.a $(HEADERS)
 	mkdir $(PACKAGE)
 	mkdir $(PACKAGE)/usr/local/lib -p
-	cp $(INCLUDE) $(PACKAGE)/usr/local/ -r
+	cp $(INCLUDEPATH) $(PACKAGE)/usr/local/ -r
 	cp libcrawpp.a $(PACKAGE)/usr/local/lib
 	mkdir $(PACKAGE)/DEBIAN
 	cp control $(PACKAGE)/DEBIAN
