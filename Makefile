@@ -51,5 +51,7 @@ debpackage: libcrawpp.a $(HEADERS)
 	cp libcrawpp.a $(PACKAGE)/usr/local/lib
 	mkdir $(PACKAGE)/DEBIAN
 	cp control $(PACKAGE)/DEBIAN
+	mkdir $(PACKAGE)/usr/share/doc/libcrawpp/ -p
+	cp LICENSE $(PACKAGE)/usr/share/doc/libcrawpp/copyright
 	dpkg-deb --build --root-owner-group $(PACKAGE)
 	rm $(PACKAGE) -r
