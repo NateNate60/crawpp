@@ -5,7 +5,7 @@
 
 namespace CRAW {
     /**
-    This class represents a comment on Reddit.
+    @brief Represents a comment on Reddit.
     @note This class doesn't have a constructor by ID because it is not
     possible to search for a comment by only its ID without knowing the ID
     of the parent post.

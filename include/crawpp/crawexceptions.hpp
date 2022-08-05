@@ -21,7 +21,7 @@ namespace CRAW {
     
 
     /**
-     * The general CRAW error that all other exceptions
+     * @brief The general CRAW error that all other exceptions
      * inherit from. This is the most general error
      * that CRAW classes and methods may throw.
      * 
@@ -33,7 +33,7 @@ namespace CRAW {
     };
 
     /**
-     * CommunicationError represents a failed attempt to communicate with the
+     * @brief CommunicationError represents a failed attempt to communicate with the
      * server. Whenever the server either responds with something in an
      * unexpected form or an error, or something is attempted that WOULD
      * cause that, CommunicationError will be thrown.
@@ -48,7 +48,7 @@ namespace CRAW {
     };
 
     /**
-     * Whenever the user is not authorised to
+     * @brief Whenever the user is not authorised to
      * do something, AuthorisationError should be thrown.
      * 
      */
@@ -59,7 +59,7 @@ namespace CRAW {
     };
 
     /**
-    Certain features are only available if authentication information is provided, 
+    @brief Certain features are only available if authentication information is provided, 
     e.g. making a post. If this information is not provided and the user attempts 
     to perform some action which requires authentication, NotLoggedInError will be
     thrown.
@@ -71,7 +71,7 @@ namespace CRAW {
     };
 
     /**
-    An error occurred while trying to retrive the token
+    @brief An error occurred while trying to retrive the token
     */
     class LoginError : public AuthorisationError {
         public:
@@ -80,7 +80,7 @@ namespace CRAW {
     };
 
     /**
-    Some tasks can only be perform with authorisation. Anything that causes the API
+    @brief Some tasks can only be perform with authorisation. Anything that causes the API
     to return a 403 will throw UnauthorisedError. Examples of this is trying to
     delete a post when you aren't the author or trying to remove a comment when you
     aren't a moderator.
@@ -92,7 +92,7 @@ namespace CRAW {
     };
 
     /**
-    Trying to access something that doesn't exist (or giving a monkey a shower,
+    @brief Trying to access something that doesn't exist (or giving a monkey a shower,
     surfing tidal waves, creating nanobots, or looking in Frankenstien's brain)
     will cause NotFoundError to be thrown.
     */
@@ -103,7 +103,7 @@ namespace CRAW {
     };
 
     /**
-     * Whenever the user tries to interact with something in a way that is
+     * @brief Whenever the user tries to interact with something in a way that is
      * invalid, such as trying to ban themselves or edit an image post, throw
      * InvalidInteractionError.
      */
@@ -114,7 +114,7 @@ namespace CRAW {
     };
 
     /**
-     * This error should be thrown when the user attempts to edit something
+     * @brief This error should be thrown when the user attempts to edit something
      * that can't be edited, like an image post.
     */
     class EditingError : public InvalidInteractionError {
@@ -124,7 +124,7 @@ namespace CRAW {
     };
 
     /**
-     * When the user makes a malformed attempt to post something, PostingError is thrown
+     * @brief When the user makes a malformed attempt to post something, PostingError is thrown
      */
     class PostingError : public InvalidInteractionError {
         public:
@@ -133,7 +133,7 @@ namespace CRAW {
     };
 
     /**
-     * When the user makes an invalid attempt to moderate something.
+     * @brief When the user makes an invalid attempt to moderate something.
      * Note that unauthroised moderation throws AuthorisationError instead.
      */
     class ModerationError : public InvalidInteractionError {
@@ -143,7 +143,7 @@ namespace CRAW {
     };
     
     /**
-     * When the user makes an invalid attempt to ban someone, throw BanError.
+     * @brief When the user makes an invalid attempt to ban someone, throw BanError.
      */
     class BanError : public ModerationError {
         public:
@@ -152,7 +152,7 @@ namespace CRAW {
     };
 
     /**
-     * If the user attempts to ban someone for a duration fewer than 0 days or
+     * @brief If the user attempts to ban someone for a duration fewer than 0 days or
      * more than 999 days, BanDurationError is thrown. Note that a 0-day ban
      * is a permanent ban.
      */

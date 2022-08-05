@@ -6,7 +6,7 @@
 
 namespace CRAW {
     /**
-    Models a Reddit submission. Post and Comment
+    @brief Models a Reddit submission. Post and Comment
     inherit from this class.
 
     This class should not be directly instantiated.

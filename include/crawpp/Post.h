@@ -9,7 +9,7 @@
 namespace CRAW {
 
     /**
-    An object representing a Reddit post
+    @brief An object representing a Reddit post
     */
     class Post : public Submission {
         private:
