@@ -58,3 +58,7 @@ debpackage: libcrawpp.a $(HEADERS)
 	cp LICENSE $(PACKAGE)/usr/share/doc/libcrawpp/copyright
 	dpkg-deb --build --root-owner-group $(PACKAGE)
 	rm $(PACKAGE) -r
+
+docs:
+	doxygen Doxyfile
+	scp -qr html/crawpp nate@natenate60.xyz:/var/www/html
