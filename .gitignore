@@ -33,3 +33,7 @@
 
 # VS Code config stuff
 .vscode/*
+
+# Doxygen documentation
+html/crawpp/*
+latex/*

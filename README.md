@@ -1,4 +1,5 @@
-# CRAW++
+CRAW++
+======
 
 CRAW++ is the _C++ Reddit API Wrapper_. CRAW++ is intended to be used as a library which can be included in a C++ project to access the Reddit API rather than making HTTP calls manually using `libcurl` or some other library. CRAW++ strives to be as easy to learn and use as possible while still being feature-rich. This project exists mainly because previous attempts to create a C++ Reddit API wrapper were unmaintained and undocumented.
 
@@ -49,7 +50,7 @@ macOS is unsupported because I don't have a Mac to test this library with.
 
 ## Usage
 
-Documentation will be written later. For now, please refer to the examples to get a rough idea of what this library can do.
+Documentation is available at  https://natenate60.xyz/crawpp. Please refer to the examples to get a rough idea of what this library can do.
 
 Please note that all clients are required to authenticate using OAuth, and currently the only supported way to do this is to fetch API keys on your Reddit account. You must [get API keys](https://github.com/reddit-archive/reddit/wiki/OAuth2) and then pass them to a `Reddit` instance.
 
