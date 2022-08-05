@@ -7,7 +7,7 @@
 
 namespace CRAW {
     /**
-    Represents a Reddit user.
+    @brief Represents a Reddit user.
     */
     class Redditor {
         private:
@@ -40,6 +40,7 @@ namespace CRAW {
             Initialise a Redditor instance matching the given username.
             
             @param name: The username of the Redditor
+            @param redditinstance The Reddit instance to associate with the Redditor
             */
             Redditor (const std::string & name, Reddit * redditinstance = nullptr);
 

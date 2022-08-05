@@ -35,7 +35,7 @@ namespace CRAW {
 
             // The username of the author of the submission
             std::string authorname;
-            // Fetches a Redditor instance for the author of the submission
+            /** Fetches a Redditor instance for the author of the submission */
             Redditor author ();
 
             // The fullname of the submission. The fullname is used by Reddit and is a combination of a thing's type and its globally-unique ID.
@@ -91,7 +91,7 @@ namespace CRAW {
             Edit the submission (as the author). Returns a reference to the submission so
             calls can be chained together (e.g. Submission.reply().remove()).
 
-            @param newcontent: The new contents to replace the current submission contents
+            @param newcontents The new contents to replace the current submission contents
             @return A reference to the Submission that was edited
             @note The contents and the edited time will be updated, but nothing else
             will change in the Submission object.

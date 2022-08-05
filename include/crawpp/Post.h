@@ -39,6 +39,7 @@ namespace CRAW {
              * object within the response. Use this to avoid making a duplicate API
              * call.
              * 
+             * @param data The "data" field of the API response, as a JSON object
              * @param redditinstance The Reddit instance to associate with the post
              */
             Post (nlohmann::json & data, Reddit * redditinstance = nullptr);

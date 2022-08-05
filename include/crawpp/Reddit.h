@@ -15,7 +15,7 @@ namespace CRAW {
 
 
     /**
-    Represents the user's session with Reddit.
+    @brief Represents the user's session with Reddit.
     */
     class Reddit {
         private:
