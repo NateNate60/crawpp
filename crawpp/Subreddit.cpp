@@ -199,7 +199,7 @@ namespace CRAW {
         body["action_source"] = "a"; //required by API for unknown reason
         body["skip_initial_defaults"] = skip_initial_defaults;
         body["sr"] = name;
-        _redditinstance->_sendrequest("POST", "/api/unsubscribe", body.dump());
+        _redditinstance->_sendrequest("POST", "/api/subscribe", body.dump());
         return *this;
     }
 
@@ -212,7 +212,7 @@ namespace CRAW {
         body["action"] = "unsub";
         body["action_source"] = "a"; //required by API for unknown reason
         body["sr"] = name;
-        _redditinstance->_sendrequest("POST", "/api/unsubscribe", body.dump());
+        _redditinstance->_sendrequest("POST", "/api/subscribe", body.dump());
         return *this;
     }
 
