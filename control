@@ -6,4 +6,4 @@ Maintainer: Nathan Lim <nathanlim2004@gmail.com>
 Description: CRAW++: A C++ Reddit API wrapper
  CRAW++ is the C++ Reddit API Wrapper. CRAW++ is intended to be used as a library which can be included in a C++ project to access the Reddit API rather than making HTTP calls manually using libcurl or some other library. CRAW++ strives to be as easy to learn and use as possible while still being feature-rich.
 Homepage: https://github.com/NateNate60/crawpp
-Depends: nlohmann-json3-dev
+Depends: nlohmann-json3-dev, libcurl4-openssl-dev

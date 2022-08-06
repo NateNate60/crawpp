@@ -1,4 +1,4 @@
-VERSION = 0.1alpha-1
+VERSION = 0.1alpha-2
 
 INCLUDEPATH = ./include
 STANDARD = c++17
