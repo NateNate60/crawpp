@@ -32,7 +32,7 @@ All models are in the `CRAW` namespace.
 
 ## The `Reddit` Class
 
-The `Reddit` class is your gateway to the Reddit API. Most interacts with Reddit directly that are not tied to some other object will be done by calling the member functions of the `Reddit` class. Logging into Reddit is performed by providing login credentials when initialising the class.
+The [Reddit](@ref CRAW::Reddit) class is your gateway to the Reddit API. Most interactions with Reddit directly that are not tied to some other object will be done by calling the member functions of the `Reddit` class. Logging into Reddit is performed by providing login credentials when initialising the class.
 
 ```cpp
 CRAW::Reddit reddit = CRAW::Reddit("username", 
@@ -46,7 +46,7 @@ CRAW::Reddit unauthenticated CRAW::Reddit();
 
 ## CRAW++ Classes
 
-All familiar Reddit objects are modelled using convenient classes, such as `Post`, `Subreddit`, and `Redditor`. These represent exactly what you'd expect them to. However, to get instances of these classes you should class the `Reddit` object's member functions. You also can, but shouldn't, initialise them directly using their constructor. This is the recommended way to get a `Subreddit` instance representing r/gaming, a `Redditor` instance representing u/NateNate60, and a `Post` instance representing [this post](https://reddit.com/r/pics/comments/92dd8/test_post_please_ignore/):
+All familiar Reddit objects are modelled using convenient classes, such as [Post](@ref CRAW::Post), [Subreddit](@ref CRAW::Subreddit), and [Redditor](@ref CRAW::Redditor). These represent exactly what you'd expect them to. However, to get instances of these classes you should class the `Reddit` object's member functions. You also can, but shouldn't, initialise them directly using their constructor. This is the recommended way to get a `Subreddit` instance representing r/gaming, a `Redditor` instance representing u/NateNate60, and a `Post` instance representing [this post](https://reddit.com/r/pics/comments/92dd8/test_post_please_ignore/):
 
 ```cpp
 CRAW::Subreddit r_gaming = reddit.subreddit("gaming");
