@@ -6,7 +6,8 @@ SOURCE = ./crawpp
 OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o Submission.o
 HEADERS = $(INCLUDE)/Award.h  $(INCLUDE)/Comment.h  $(INCLUDE)/crawexceptions.hpp  $(INCLUDE)/craw.h  $(INCLUDE)/Post.h  $(INCLUDE)/Reddit.h  $(INCLUDE)/Redditor.h  $(INCLUDE)/Submission.h  $(INCLUDE)/Subreddit.h
 INCLUDE = $(INCLUDEPATH)/crawpp
-ARGS = -g -c -I$(INCLUDEPATH) -L$(SOURCE) --std=$(STANDARD)
+EXEARGS = -g -I$(INCLUDEPATH) -L$(SOURCE) --std=$(STANDARD)
+ARGS = -c $(EXEARGS)
 
 PACKAGE = libcrawpp_$(VERSION)_amd64
 
@@ -32,7 +33,7 @@ Submission.o: $(SOURCE)/Submission.cpp $(INCLUDE)/Submission.h $(INCLUDE)/crawex
 	g++ $(ARGS) $(SOURCE)/Submission.cpp
 
 a.out: test.cpp libcrawpp.a
-	g++ $(ARGS) test.cpp -lcrawpp
+	g++ $(EXEARGS) test.cpp -lcrawpp -lcpr
 
 install: libcrawpp.a
 	cp libcrawpp.a /usr/local/lib
