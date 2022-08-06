@@ -30,33 +30,51 @@ namespace CRAW {
              */
             nlohmann::json information;
 
-            // The ID assigned to the submission by Reddit
+            /**
+			The ID assigned to the submission by Reddit
+			*/
             std::string id;
 
-            // The username of the author of the submission
+            /**
+			The username of the author of the submission
+			*/
             std::string authorname;
             /** Fetches a Redditor instance for the author of the submission */
             Redditor author ();
 
-            // The fullname of the submission. The fullname is used by Reddit and is a combination of a thing's type and its globally-unique ID.
+            /**
+			The fullname of the submission. The fullname is used by Reddit and is a combination of a thing's type and its globally-unique ID.
+			*/
             std::string fullname;
 
-            // The type of submission, such as "link" or "text"
+            /**
+			The type of submission, such as "link" or "text"
+			*/
             std::string type;
 
-            // The contents of the submission
+            /**
+			The contents of the submission
+			*/
             std::string content;
 
-            // The name of the subreddit that the submission was made in. Use subreddit() instead to get a Subreddit instance
+            /**
+			The name of the subreddit that the submission was made in. Use subreddit() instead to get a Subreddit instance
+			*/
             std::string subredditname;
 
-            // The time that the submission was made
+            /**
+			The time that the submission was made
+			*/
             time_t posted;
 
-            // The submission's current score. Note that due to the vote-fuzzing done by Reddit, this number is not 100% accurate.
+            /**
+			The submission's current score. Note that due to the vote-fuzzing done by Reddit, this number is not 100% accurate.
+			*/
             int score;
 
-            // The time that the submission was edited, or 0 if never
+            /**
+			The time that the submission was edited, or 0 if never
+			*/
             time_t edited;
 
             /**
@@ -102,8 +120,11 @@ namespace CRAW {
             Upvote a submission. Returns a reference to the submission so
             calls can be chained together (e.g. Submission.reply().remove()).
 
-            @note A human must to be the one triggering this action. Reddit prohibits 
-            automated voting by bots as that is considered vote-cheating.
+            @note A human must to be the one triggering this action. Automated voting
+            by bots is prohibited, however, proxying a human vote is allowed (i.e. it is
+            okay to call a vote method when a human end user clicks a button to cast a
+            single vote). Bots voting on their own or amplifying a human's vote is
+            considered vote manipulation.
 
             @return A reference to the Submission that was upvoted
             */
@@ -113,8 +134,11 @@ namespace CRAW {
             Downvote a submission. Returns a reference to the submission so
             calls can be chained together (e.g. Submission.reply().remove()).
 
-            @note A human must to be the one triggering this action. Reddit prohibits 
-            automated voting by bots as that is considered vote-cheating.
+            @note A human must to be the one triggering this action. Automated voting
+            by bots is prohibited, however, proxying a human vote is allowed (i.e. it is
+            okay to call a vote method when a human end user clicks a button to cast a
+            single vote). Bots voting on their own or amplifying a human's vote is
+            considered vote manipulation.
 
             @return A reference to the Submission that was downvoted
             */
@@ -124,8 +148,11 @@ namespace CRAW {
             Clear your vote on a submission. Returns a reference to the submission so
             calls can be chained together (e.g. Submission.reply().remove()).
 
-            @note A human must to be the one triggering this action. Reddit prohibits 
-            automated voting by bots as that is considered vote-cheating.
+            @note A human must to be the one triggering this action. Automated voting
+            by bots is prohibited, however, proxying a human vote is allowed (i.e. it is
+            okay to call a vote method when a human end user clicks a button to cast a
+            single vote). Bots voting on their own or amplifying a human's vote is
+            considered vote manipulation.
 
             @return A reference to the Submission that was downvoted
             */

@@ -62,34 +62,54 @@ namespace CRAW {
         private:
             Reddit * _redditinstance;
         public:
-            // Stores info about the subreddit
+            /**
+			Stores info about the subreddit
+			*/
             nlohmann::json information;
 
-            // The name of the subreddit, not including the r/
+            /**
+			The name of the subreddit, not including the r/
+			*/
             std::string name;
             
-            // The fullname of the subreddit, which always starts with "t5_". The fullname is used by Reddit and is a combination of a thing's type and its globally-unique ID.
+            /**
+			The fullname of the subreddit, which always starts with "t5_". The fullname is used by Reddit and is a combination of a thing's type and its globally-unique ID.
+			*/
             std::string fullname;
 
-            // Whether the current user is banned (always false if not authenticated)
+            /**
+			Whether the current user is banned (always false if not authenticated)
+			*/
             bool banned;
 
-            // Whether there are posting restrictions
+            /**
+			Whether there are posting restrictions
+			*/
             bool postingrestricted;
 
-            // Whether the subreddit is quarantined
+            /**
+			Whether the subreddit is quarantined
+			*/
             bool quarantined;
 
-            // The subreddit's language
+            /**
+			The subreddit's language
+			*/
             std::string language;
 
-            // When the subreddit was created
+            /**
+			When the subreddit was created
+			*/
             time_t created;
 
-            // The number of subscribers (members) that the subreddit has
+            /**
+			The number of subscribers (members) that the subreddit has
+			*/
             int subscribers;
 
-            // How many people on the subreddit are here now
+            /**
+			How many people on the subreddit are here now
+			*/
             int activeusers;
 
             /**

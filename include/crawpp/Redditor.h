@@ -13,27 +13,45 @@ namespace CRAW {
         private:
             Reddit * _redditinstance;
         public:
-            // Stores information about the user
+            /**
+			Stores information about the user
+			*/
             nlohmann::json information;
 
-            // The user's fullname. The fullname is used internally by Reddit.
+            /**
+			The user's fullname. The fullname is used internally by Reddit.
+			*/
             std::string fullname;
 
-            // The user's username, without the u/
+            /**
+			The user's username, without the u/
+			*/
             std::string username;
 
-            // The UTC time that this account was created
+            /**
+			The UTC time that this account was created
+			*/
             time_t created;
 
-            // The total number of karma points this user has
+            /**
+			The total number of karma points this user has
+			*/
             unsigned long totalkarma;
-            // The number of karma points earned from giving out awards
+            /**
+			The number of karma points earned from giving out awards
+			*/
             unsigned long awarderkarma;
-            // The number of karma points earned from getting awards
+            /**
+			The number of karma points earned from getting awards
+			*/
             unsigned long awardeekarma;
-            // The number of karma points earned from posts
+            /**
+			The number of karma points earned from posts
+			*/
             unsigned long postkarma;
-            // The number of karma points earned from comments
+            /**
+			The number of karma points earned from comments
+			*/
             unsigned long commentkarma;
 
             /**

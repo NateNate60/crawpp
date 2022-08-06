@@ -22,9 +22,13 @@ namespace CRAW {
             std::string _password;
             std::string _apisecret;
 
-            // Stores the API token
+            /**
+			Stores the API token
+			*/
             std::string _token;
-            // Stores the API token's expiration time
+            /**
+			Stores the API token's expiration time
+			*/
             time_t _expiration;
 
             /**
@@ -62,16 +66,24 @@ namespace CRAW {
             friend class Submission;
             friend class Subreddit;
         public:
-            // True if authetication info was provided, false if not
+            /**
+			Whether the session is authenticated
+			*/
             bool authenticated;
 
-            // The username of the Reddit account associated with the current session, empty if not authenticated
+            /**
+			The username of the Reddit account associated with the current session, empty if not authenticated
+			*/
             std::string username;
 
-            // The user agent string associated with the current session, empty if not authenticated
+            /**
+			The user agent string associated with the current session, empty if not authenticated
+			*/
             std::string useragent;
 
-            // The user id associated with the current session, empty if not authenticated
+            /**
+			The user id associated with the current session, empty if not authenticated
+			*/
             std::string clientid;
 
             /**
@@ -89,7 +101,9 @@ namespace CRAW {
                     const std::string & api_secret, 
                     const std::string & user_agent);
 
-            // Passing no arguments to the initialiser indicates not authenticating with Reddit
+            /**
+			Passing no arguments to the initialiser indicates not authenticating with Reddit
+			*/
             Reddit ();
 
             /**

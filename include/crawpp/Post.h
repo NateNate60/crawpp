@@ -23,14 +23,20 @@ namespace CRAW {
              */
             void _init (const nlohmann::json & data, const nlohmann::json & comments = nlohmann::json());
 
-            // Stores the comments data from the post, which is the "children" field of a comment listing
+            /**
+             * Stores the comments data from the post, which is the "children" field of a comment listing
+             */
             nlohmann::json _comments;
         public:
 
-            // The text of the post's flair
+            /**
+			The text of the post's flair
+			*/
             std::string flairtext;
 
-            // The title of the post
+            /**
+			The title of the post
+			*/
             std::string title;
 
             /**
