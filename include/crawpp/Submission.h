@@ -3,6 +3,7 @@
 #include <string>
 
 #include "crawpp/Reddit.h"
+#include "crawpp/CRAWObject.h"
 
 namespace CRAW {
     /**
@@ -11,7 +12,7 @@ namespace CRAW {
 
     This class should not be directly instantiated.
     */
-    class Submission {
+    class Submission : public CRAWObject{
         private:
             /**
              * Cast a vote in a certain direction for a submission.
@@ -21,8 +22,6 @@ namespace CRAW {
              * @param direction 1 for upvote, -1 for downvote, 0 for unvote
              */
             void _vote (int direction);
-        protected:
-            Reddit * _redditinstance;
         public:
             /**
              *  Stores information about the submission.

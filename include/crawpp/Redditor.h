@@ -4,14 +4,13 @@
 #include <nlohmann/json.hpp>
 
 #include "crawpp/Reddit.h"
+#include "crawpp/CRAWObject.h"
 
 namespace CRAW {
     /**
     @brief Represents a Reddit user.
     */
-    class Redditor {
-        private:
-            Reddit * _redditinstance;
+    class Redditor : public CRAWObject {
         public:
             /**
 			Stores information about the user

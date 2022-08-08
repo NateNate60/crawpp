@@ -6,6 +6,7 @@
 #include <string>
 
 #include "crawpp/Reddit.h"
+#include "crawpp/CRAWObject.h"
 
 namespace CRAW {
 
@@ -58,9 +59,7 @@ namespace CRAW {
     /**
     @brief Represents a subreddit
     */
-    class Subreddit {
-        private:
-            Reddit * _redditinstance;
+    class Subreddit : public CRAWObject{
         public:
             /**
 			Stores info about the subreddit

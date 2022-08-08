@@ -5,6 +5,8 @@
 #include <string>
 #include <ctime>
 
+#include "crawpp/CRAWObject.h"
+
 namespace CRAW {
     // Forward-declarations of classes to avoid having header files #include each other
     class Redditor;
@@ -17,7 +19,7 @@ namespace CRAW {
     /**
     @brief Represents the user's session with Reddit.
     */
-    class Reddit {
+    class Reddit : public CRAWObject{
         private:
             std::string _password;
             std::string _apisecret;
