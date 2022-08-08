@@ -194,12 +194,11 @@ namespace CRAW {
             throw NotLoggedInError("You must be logged in to subscribe to r/" + name + ".");
         }
 
-        nlohmann::json body = {};
-        body["action"] = "sub";
-        body["action_source"] = "a"; //required by API for unknown reason
-        body["skip_initial_defaults"] = skip_initial_defaults;
-        body["sr"] = name;
-        _redditinstance->_sendrequest("POST", "/api/subscribe", body.dump());
+        cpr::Payload body = {{"action", "sub"},
+                             {"action_source", "a"}, //required by API for unknown reason
+                             {"skip_initial_defailts", skip_initial_defaults ? "true" : "false"},
+                             {"sr", fullname}};
+        _redditinstance->_sendrequest("POST", "/api/subscribe", body);
         return *this;
     }
 
@@ -208,11 +207,10 @@ namespace CRAW {
             throw NotLoggedInError("You must be logged in to unsubscribe to r/" + name + ".");
         }
 
-        nlohmann::json body = {};
-        body["action"] = "unsub";
-        body["action_source"] = "a"; //required by API for unknown reason
-        body["sr"] = name;
-        _redditinstance->_sendrequest("POST", "/api/subscribe", body.dump());
+        cpr::Payload body = {{"action", "unsub"},
+                             {"action_source", "a"}, //required by API for unknown reason
+                             {"sr", fullname}};
+        _redditinstance->_sendrequest("POST", "/api/subscribe", body);
         return *this;
     }
 
