@@ -35,23 +35,23 @@ namespace CRAW {
             /**
 			The total number of karma points this user has
 			*/
-            unsigned long totalkarma;
+            int totalkarma;
             /**
 			The number of karma points earned from giving out awards
 			*/
-            unsigned long awarderkarma;
+            int awarderkarma;
             /**
 			The number of karma points earned from getting awards
 			*/
-            unsigned long awardeekarma;
+            int awardeekarma;
             /**
 			The number of karma points earned from posts
 			*/
-            unsigned long postkarma;
+            int postkarma;
             /**
 			The number of karma points earned from comments
 			*/
-            unsigned long commentkarma;
+            int commentkarma;
 
             /**
             Initialise a Redditor instance matching the given username.
