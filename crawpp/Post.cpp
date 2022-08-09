@@ -33,6 +33,11 @@ namespace CRAW {
             content = data["url"].get<std::string>();
         }
         _comments = comments;
+
+        awards = std::set<Award> ();
+        for (auto & i : data["all_awardings"]) {
+            awards.insert(Award(i));
+        }
     }
 
     Post::Post (const std::string & id, Reddit * redditinstance) {

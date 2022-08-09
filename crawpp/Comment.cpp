@@ -1,7 +1,9 @@
 #include <nlohmann/json.hpp>
+#include <set>
 
 #include "crawpp/Reddit.h"
 #include "crawpp/Comment.h"
+#include "crawpp/Award.h"
 
 namespace CRAW {
     Comment::Comment (const nlohmann::json & data, Reddit * redditinstance) {
@@ -20,6 +22,11 @@ namespace CRAW {
         }
         depth = data["depth"];
         content = data["body"];
+
+        awards = std::set<Award> ();
+        for (auto & i : data["all_awardings"]) {
+            awards.insert(Award(i));
+        }
     }
 
     std::vector<Comment> Comment::replies () {

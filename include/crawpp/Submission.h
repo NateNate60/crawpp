@@ -1,9 +1,11 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <string>
+#include <set>
 
 #include "crawpp/Reddit.h"
 #include "crawpp/CRAWObject.h"
+#include "crawpp/Award.h"
 
 namespace CRAW {
     /**
@@ -67,7 +69,8 @@ namespace CRAW {
             time_t posted;
 
             /**
-			The submission's current score. Note that due to the vote-fuzzing done by Reddit, this number is not 100% accurate.
+			The submission's current score. 
+            @note The Reddit API doesn't return exact vote counts. This is known as "vote fuzzing".
 			*/
             int score;
 
@@ -75,6 +78,13 @@ namespace CRAW {
 			The time that the submission was edited, or 0 if never
 			*/
             time_t edited;
+
+            /**
+             * A list of awards that the submission has received. Duplicate
+             * awards are not listed multiple times, instead incrementing the
+             * "count" member variable of each award type.
+             */
+            std::set<Award> awards;
 
             /**
             Reply to a submission. Returns the new comment.
