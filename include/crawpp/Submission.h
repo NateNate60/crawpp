@@ -4,7 +4,7 @@
 
 #include "crawpp/Reddit.h"
 #include "crawpp/CRAWObject.h"
-#include "crawpp/Award.h"
+#include "crawpp/Award.hpp"
 
 namespace CRAW {
     /**
