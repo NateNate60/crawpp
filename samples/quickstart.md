@@ -73,3 +73,18 @@ r_gaming.subscribe();
 ```
 
 That's all there is to it! Manual memory management is not needed unless you chose to use `new`. If you did, don't forget to `delete` when you're done. Take a look at the [Classes section](https://natenate60.xyz/crawpp/annotated.html) to see the full description for each class's methods and members.
+
+## CRAW++ Exceptions
+
+Exceptions are thrown by CRAW++ whenever it reaches and invalid state or the user attempts to do something that would cause it to enter an invalid state.
+
+All exceptions are in the `CRAW::errors` namespace and all of them return information about what caused the failure and why it failed.
+
+```cpp
+try {
+    CRAW::Post = reddit.post("12345") // invalid post id
+} catch (CRAW::errors::NotFoundError & error) {
+    std::cout << error.what() << std::endl
+    // "No such post with ID 12345"
+}
+```
