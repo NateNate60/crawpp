@@ -39,14 +39,14 @@ namespace CRAW {
         nlohmann::json responsejson;
         try {
             responsejson = redditinstance->_sendrequest("GET", "https://api.reddit.com/" + id);
-        } catch (NotFoundError &) {
-            throw NotFoundError("No such post with ID " + id);
-        } catch (UnauthorisedError &) {
-            throw UnauthorisedError("You are not authorised to view the post with ID " + id);
+        } catch (errors::NotFoundError &) {
+            throw errors::NotFoundError("No such post with ID " + id);
+        } catch (errors::UnauthorisedError &) {
+            throw errors::UnauthorisedError("You are not authorised to view the post with ID " + id);
         }
 
         if (responsejson[0]["data"].is_null()) {
-            throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
+            throw errors::CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
         }
 
         _init(responsejson[0]["data"], responsejson[1]["data"]["children"]);
@@ -61,14 +61,14 @@ namespace CRAW {
             nlohmann::json responsejson;
             try {
                 responsejson = _redditinstance->_sendrequest("GET", "/" + id)[1]["data"]["children"];
-            } catch (NotFoundError &) {
-                throw NotFoundError("No such post with ID " + id);
-            } catch (UnauthorisedError &) {
-                throw UnauthorisedError("You are not authorised to view the post with ID " + id);
+            } catch (errors::NotFoundError &) {
+                throw errors::NotFoundError("No such post with ID " + id);
+            } catch (errors::UnauthorisedError &) {
+                throw errors::UnauthorisedError("You are not authorised to view the post with ID " + id);
             }
 
             if (responsejson.is_null()) {
-                throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
+                throw errors::CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
             }
             _comments = responsejson;
         }

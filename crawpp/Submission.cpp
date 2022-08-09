@@ -11,7 +11,7 @@
 namespace CRAW {
     Comment Submission::reply (const std::string & contents, bool distinguish) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to leave a reply.");
+            throw errors::NotLoggedInError("You must be logged in to leave a reply.");
         }
         nlohmann::json body = {};
         body["return_rtjson"] = true;
@@ -27,7 +27,7 @@ namespace CRAW {
 
     void Submission::remove (bool spam) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to remove a submission.");
+            throw errors::NotLoggedInError("You must be logged in to remove a submission.");
         }
         nlohmann::json body = {};
         body["id"] = fullname;
@@ -37,7 +37,7 @@ namespace CRAW {
 
     void Submission::del () {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to delete a submission.");
+            throw errors::NotLoggedInError("You must be logged in to delete a submission.");
         }
         nlohmann::json body = {};
         body["id"] = fullname;
@@ -46,7 +46,7 @@ namespace CRAW {
 
     Submission & Submission::edit (const std::string & newcontents) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to edit a submission.");
+            throw errors::NotLoggedInError("You must be logged in to edit a submission.");
         }
         nlohmann::json body = {};
         body["id"] = fullname;
@@ -55,10 +55,10 @@ namespace CRAW {
         nlohmann::json response = _redditinstance->_sendrequest("POST", "/api/editusertext", body.dump());
         if (response["code"] == 500) {
             // e.g. editing an image post
-            throw EditingError("You can't edit that post.");
+            throw errors::EditingError("You can't edit that post.");
         } else if (response["code"] == 403) {
             // e.g. editing someone else's post
-            throw EditingError("You aren't allowed to edit that post.");
+            throw errors::EditingError("You aren't allowed to edit that post.");
         }
         edited = response["edited"];
         content = newcontents;
@@ -71,7 +71,7 @@ namespace CRAW {
         assert(direction >= 1 && direction <= -1);
 
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to edit a submission.");
+            throw errors::NotLoggedInError("You must be logged in to edit a submission.");
         }
         nlohmann::json body = {};
         body["id"] = fullname;

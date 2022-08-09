@@ -11,12 +11,12 @@ Redditor::Redditor (const std::string & name, Reddit * redditinstance) {
     nlohmann::json responsejson;
     try {
         responsejson = redditinstance->_sendrequest("GET", "/user/" + name + "/about")["data"];
-    } catch (const NotFoundError &) {
-        throw NotFoundError("Could not find any user with username" + name + ".");
-    } catch (const UnauthorisedError &) {
-        throw UnauthorisedError("You aren't allowed to access u/" + name + ". Did you block this user?");
-    } catch (const CommunicationError & error) {
-        throw CommunicationError(error.what() + std::string(" while fetching u/") + name + ".");
+    } catch (const errors::NotFoundError &) {
+        throw errors::NotFoundError("Could not find any user with username" + name + ".");
+    } catch (const errors::UnauthorisedError &) {
+        throw errors::UnauthorisedError("You aren't allowed to access u/" + name + ". Did you block this user?");
+    } catch (const errors::CommunicationError & error) {
+        throw errors::CommunicationError(error.what() + std::string(" while fetching u/") + name + ".");
     }
 
     _redditinstance = redditinstance;
@@ -52,7 +52,7 @@ std::string Redditor::operator[] (const std::string & attribute) {
 
 void Redditor::follow () {
     if (!_redditinstance->authenticated) {
-        throw NotLoggedInError("You must be logged in to follow someone.");
+        throw errors::NotLoggedInError("You must be logged in to follow someone.");
     }
     nlohmann::json body;
     body["action"] = "follow";
@@ -65,7 +65,7 @@ void Redditor::follow () {
 
 void Redditor::unfollow () {
     if (!_redditinstance->authenticated) {
-        throw NotLoggedInError("You must be logged in to follow someone.");
+        throw errors::NotLoggedInError("You must be logged in to follow someone.");
     }
     nlohmann::json body;
     body["action"] = "unfollow";

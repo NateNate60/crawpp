@@ -12,10 +12,10 @@ namespace CRAW {
     Subreddit::Subreddit (const std::string & subredditname, Reddit * redditinstance) {
         try {
             information = redditinstance->_sendrequest("GET", "/r/" + subredditname + "/about")["data"];
-        } catch (NotFoundError &) {
-            throw NotFoundError("Could not find a subreddit with name r/" + subredditname);
-        } catch (UnauthorisedError &) {
-            throw UnauthorisedError("You aren't allowed to access r/" + subredditname);
+        } catch (errors::NotFoundError &) {
+            throw errors::NotFoundError("Could not find a subreddit with name r/" + subredditname);
+        } catch (errors::UnauthorisedError &) {
+            throw errors::UnauthorisedError("You aren't allowed to access r/" + subredditname);
         }
 
         if (!information["children"].is_null()) {
@@ -26,7 +26,7 @@ namespace CRAW {
                 similars += " ";
                 similars += i["data"]["display_name"];
             }
-            throw NotFoundError("No subreddit named \"" + subredditname + "\" exists. Did you mean any of these?" + similars);
+            throw errors::NotFoundError("No subreddit named \"" + subredditname + "\" exists. Did you mean any of these?" + similars);
         }
         _redditinstance = redditinstance;
         name = information["display_name"];
@@ -73,11 +73,11 @@ namespace CRAW {
         nlohmann::json responsejson;
         try {
             responsejson = _redditinstance->_sendrequest("GET", "/r/" + name + "/" + sort);
-        } catch (UnauthorisedError &) {
-            throw UnauthorisedError("You don't have permission to look at r/" + name + " posts.");
+        } catch (errors::UnauthorisedError &) {
+            throw errors::UnauthorisedError("You don't have permission to look at r/" + name + " posts.");
         }
         if (responsejson.is_null()) {
-            throw CommunicationError("Malformed response from server when fetching r/" + name + " posts.");
+            throw errors::CommunicationError("Malformed response from server when fetching r/" + name + " posts.");
         }
         std::vector<Post> postvector = {};
 
@@ -100,13 +100,13 @@ namespace CRAW {
                         const std::string & contents,
                         const PostOptions & options) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to make a post.");
+            throw errors::NotLoggedInError("You must be logged in to make a post.");
         }
         if (options.event_start == 0 && options.event_end != 0 || options.event_start != 0 && options.event_end == 0) {
-            throw PostingError("Either both event_start and event_end must be specified, or neither, but not one.");
+            throw errors::PostingError("Either both event_start and event_end must be specified, or neither, but not one.");
         }
         if (options.event_start != 0 && options.event_timezone == "") {
-            throw PostingError("A time zone was not specified.");
+            throw errors::PostingError("A time zone was not specified.");
         }
         cpr::Payload payload = {};
         if (options.event_start != 0) {
@@ -149,7 +149,7 @@ namespace CRAW {
 
         nlohmann::json response = _redditinstance->_sendrequest("POST", "/api/submit", payload);
         if (!response["status"].is_null()) {
-            throw CommunicationError("The server gave a malformed response while attempting to make a post.");
+            throw errors::CommunicationError("The server gave a malformed response while attempting to make a post.");
         }
         if (!response["success"]) {
 
@@ -157,7 +157,7 @@ namespace CRAW {
             std::string error = response["jquery"][10][3][0];
             std::string description = response["jquery"][14][3][0];
 
-            throw PostingError("The following error was encountered when attempting to post: \"" +
+            throw errors::PostingError("The following error was encountered when attempting to post: \"" +
                             error +
                             "\" - \"" +
                             description +
@@ -180,7 +180,7 @@ namespace CRAW {
 
     Subreddit & Subreddit::subscribe (bool skip_initial_defaults) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to subscribe to r/" + name + ".");
+            throw errors::NotLoggedInError("You must be logged in to subscribe to r/" + name + ".");
         }
 
         cpr::Payload body = {{"action", "sub"},
@@ -193,7 +193,7 @@ namespace CRAW {
 
     Subreddit & Subreddit::unsubscribe () {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to unsubscribe to r/" + name + ".");
+            throw errors::NotLoggedInError("You must be logged in to unsubscribe to r/" + name + ".");
         }
 
         cpr::Payload body = {{"action", "unsub"},
@@ -217,10 +217,10 @@ namespace CRAW {
                                 const std::string & reason,
                                 const std::string & modnote) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to ban a user from a subreddit.");
+            throw errors::NotLoggedInError("You must be logged in to ban a user from a subreddit.");
         }
         if (length > 999 || length < 0) {
-            throw BanDurationError("A user can only be banned for either 0 (permanent) or up to 999 days.");
+            throw errors::BanDurationError("A user can only be banned for either 0 (permanent) or up to 999 days.");
         }
         cpr::Payload payload = {{"api_type", "json"}, 
                                 {"ban_reason", reason},
@@ -231,10 +231,10 @@ namespace CRAW {
                                 {"type", "banned"}};
         try {
             _redditinstance->_sendrequest("POST", "/r/" + name + "/api/friend", payload);
-        } catch (const UnauthorisedError &) {
-            throw UnauthorisedError("You are not allowed to ban " + username + " from r/" + name + ".");
-        } catch (const CommunicationError & error) {
-            throw CommunicationError(error.what() + std::string(" while attempting to ban ") + username);
+        } catch (const errors::UnauthorisedError &) {
+            throw errors::UnauthorisedError("You are not allowed to ban " + username + " from r/" + name + ".");
+        } catch (const errors::CommunicationError & error) {
+            throw errors::CommunicationError(error.what() + std::string(" while attempting to ban ") + username);
         }
         return *this;
     }
@@ -245,7 +245,7 @@ namespace CRAW {
 
     Subreddit & Subreddit::unban (const std::string & username, const std::string & fullname) {
         if (!_redditinstance->authenticated) {
-            throw NotLoggedInError("You must be logged in to unban a user from a subreddit.");
+            throw errors::NotLoggedInError("You must be logged in to unban a user from a subreddit.");
         }
         std::string subject = fullname;
         if (fullname == "") {
@@ -254,8 +254,8 @@ namespace CRAW {
         cpr::Payload payload = {{"api_type", "json"}, {"id", subject}, {"type", "banned"}};
         try {
             _redditinstance->_sendrequest("POST", "/r/" + name + "/api/unfriend", payload);
-        } catch (const UnauthorisedError &) {
-            throw UnauthorisedError("You are not allowed to unban " + username + " from r/" + name + ".");
+        } catch (const errors::UnauthorisedError &) {
+            throw errors::UnauthorisedError("You are not allowed to unban " + username + " from r/" + name + ".");
         }
         return *this;
     }

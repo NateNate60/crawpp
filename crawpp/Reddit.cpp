@@ -56,7 +56,7 @@ namespace CRAW {
         nlohmann::json responsejson = nlohmann::json::parse(response.text);
         if (response.status_code != 200 || !responsejson["error"].is_null()) {
             std::string errormessage = responsejson["error"];
-            throw LoginError("An error occurred when attempting to retrieve a token: " + errormessage);
+            throw errors::LoginError("An error occurred when attempting to retrieve a token: " + errormessage);
         }
 
         _token = responsejson["access_token"];
@@ -93,13 +93,13 @@ namespace CRAW {
         }
         switch (response.status_code) {
             case 404:
-                throw NotFoundError("Server responded with HTTP 404 (Not Found)");
+                throw errors::NotFoundError("Server responded with HTTP 404 (Not Found)");
             case 403:
-                throw UnauthorisedError("Server responded with HTTP 403 (Unauthorised)");
+                throw errors::UnauthorisedError("Server responded with HTTP 403 (Unauthorised)");
             case 200:
                 return nlohmann::json::parse(response.text);
             default:
-                throw CommunicationError("Server responded with error code " + response.status_code);
+                throw errors::CommunicationError("Server responded with error code " + response.status_code);
         }
 
         
@@ -142,7 +142,7 @@ namespace CRAW {
     Redditor Reddit::me () {
         if (!authenticated) {
             // Throw error, we can't provide info on who "me" is if the user doesn't tell us!
-            throw NotLoggedInError("No authentication info provided; cannot determine who \"me\" is.");
+            throw errors::NotLoggedInError("No authentication info provided; cannot determine who \"me\" is.");
         }
         return Redditor(username, this);
     }
