@@ -10,16 +10,16 @@ namespace CRAW {
 
     void Post::_init (const nlohmann::json & data, const nlohmann::json & comments) {
         information = data;
-        id = data["id"];
-        authorname = data["author"];
-        fullname = data["name"];
-        title = data["title"];
-        posted = static_cast<time_t>(data["created"]);
-        score = data["score"];
-        flairtext = data["link_flair_text"];
-        subredditname = data["subreddit"];
+        id = data["id"].get<std::string>();
+        authorname = data["author"].get<std::string>();
+        fullname = data["name"].get<std::string>();
+        title = data["title"].get<std::string>();
+        posted = data["created"].get<time_t>();
+        score = data["score"].get<int>();
+        flairtext = data["link_flair_text"].get<std::string>();
+        subredditname = data["subreddit"].get<std::string>();
         if (data["edited"].is_number()) {
-            edited = data["edited"];
+            edited = data["edited"].get<time_t>();
         } else {
             edited = 0;
         }
@@ -27,10 +27,10 @@ namespace CRAW {
         if (data["post_hint"].is_null()) {
             // text posts have no hint
             type = "text";
-            content = data["selftext"];
+            content = data["selftext"].get<std::string>();
         } else {
-            type = data["post_hint"];
-            content = data["url"];
+            type = data["post_hint"].get<std::string>();
+            content = data["url"].get<std::string>();
         }
         _comments = comments;
     }
