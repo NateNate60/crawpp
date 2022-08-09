@@ -34,9 +34,9 @@ namespace CRAW {
         }
         _comments = comments;
 
-        awards = std::set<Award> ();
+        awards = std::vector<Award> ();
         for (auto & i : data["all_awardings"]) {
-            awards.insert(Award(i));
+            awards.emplace_back(Award(i));
         }
     }
 
@@ -79,7 +79,7 @@ namespace CRAW {
         }
         std::vector<Comment> commentvector = {};
         for (auto & i : _comments) {
-            commentvector.push_back(Comment(i["data"], _redditinstance));
+            commentvector.emplace_back(Comment(i["data"], _redditinstance));
         }
         // note that the returning by value is actually not that slow because of RVO
         return commentvector;

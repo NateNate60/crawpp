@@ -1,5 +1,4 @@
 #include <nlohmann/json.hpp>
-#include <set>
 
 #include "crawpp/Reddit.h"
 #include "crawpp/Comment.h"
@@ -23,16 +22,16 @@ namespace CRAW {
         depth = data["depth"].get<int>();
         content = data["body"].get<std::string>();
 
-        awards = std::set<Award> ();
+        awards = std::vector<Award> ();
         for (auto & i : data["all_awardings"]) {
-            awards.insert(Award(i));
+            awards.emplace_back(Award(i));
         }
     }
 
     std::vector<Comment> Comment::replies () {
         std::vector<Comment> replylist = {};
         for (auto & i : information["replies"]["data"]["children"]) {
-            replylist.push_back(Comment(i["data"], _redditinstance));
+            replylist.emplace_back(Comment(i["data"], _redditinstance));
         }
         return replylist;
     }

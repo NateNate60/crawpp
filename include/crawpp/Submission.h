@@ -1,7 +1,6 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <string>
-#include <set>
 
 #include "crawpp/Reddit.h"
 #include "crawpp/CRAWObject.h"
@@ -84,7 +83,7 @@ namespace CRAW {
              * awards are not listed multiple times, instead incrementing the
              * "count" member variable of each award type.
              */
-            std::set<Award> awards;
+            std::vector<Award> awards;
 
             /**
             Reply to a submission. Returns the new comment.
