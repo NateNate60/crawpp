@@ -1,5 +1,7 @@
 #pragma once
 
+#include <set>
+
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -56,11 +58,13 @@ namespace CRAW {
              * @param method The HTTP method to use (e.g. "POST", "GET")
              * @param targeturl The target URL (e.g. "/api/v1/me")
              * @param body The data to be sent in the body of the request
+             * @param parameters The parameters of the request
              * @return JSON object representing the server's response
              */
             nlohmann::json _sendrequest (const std::string & method, 
                                          const std::string & targeturl, 
-                                         const cpr::Payload &);
+                                         const cpr::Payload & body,
+                                         const cpr::Parameters & parameters = {});
 
             // All classes that can post to the API are friends
             // All classes that teach mathematics are enemies
@@ -136,5 +140,20 @@ namespace CRAW {
             @return Post instance of the given post
             */
             Post post (const std::string & id);
+
+            /**
+             * @brief Search for subreddits that begin with a given string.
+             * 
+             * @param query A phrase to search for
+             * @param exact When set to true, only exact matches will be returned (default: false)
+             * @param nsfw Whether to include subreddits marked as NSFW in the search (default:
+             * false)
+             * @param autocomplete Whether to use the subreddit_autocoomplete endpoint, which
+             * can automatically correct typographical errors and returns fuzzy matches (default:
+             * true).
+             * @param limit The number of results to return (ignored if autocomplete is false)
+             * @return std::multiset<std::string> of subreddit names which begin with the query
+             */
+            std::multiset<std::string> search (const std::string & query, bool exact = false, bool nsfw = false, bool autocomplete = true, int limit = 5);
     };
 }

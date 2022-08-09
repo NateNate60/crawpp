@@ -64,8 +64,8 @@ namespace CRAW {
     }
 
     nlohmann::json Reddit::_sendrequest (const std::string & method, 
-                                        const std::string & targeturl, 
-                                        const std::string & body) {
+                                         const std::string & targeturl, 
+                                         const std::string & body) {
 
         if (time(nullptr) >= _expiration - 5) {
             // the token is expiring soon, get another one
@@ -106,8 +106,9 @@ namespace CRAW {
     }
 
     nlohmann::json Reddit::_sendrequest (const std::string & method, 
-                                        const std::string & targeturl, 
-                                        const cpr::Payload & body) {
+                                         const std::string & targeturl, 
+                                         const cpr::Payload & body,
+                                         const cpr::Parameters & parameters) {
 
         if (time(nullptr) >= _expiration - 5) {
             // the token is expiring soon, get another one
@@ -123,13 +124,13 @@ namespace CRAW {
         cpr::Url url = "https://oauth.reddit.com" + targeturl;
         cpr::Response response;
         if (method == "GET") {
-            response = cpr::Get(url, header, tls);
+            response = cpr::Get(url, header, parameters, tls);
         } else if (method == "POST") {
-            response = cpr::Post(url, header, body, tls);
+            response = cpr::Post(url, header, body, parameters, tls);
         } else if (method == "PUT") {
-            response = cpr::Put(url, header, body, tls);
+            response = cpr::Put(url, header, body, parameters, tls);
         } else if (method == "DELETE") {
-            response = cpr::Delete(url, header, tls);
+            response = cpr::Delete(url, header, parameters, tls);
         } else {
             throw std::invalid_argument(method + " is not a recognised HTTP method.");
         }
@@ -170,6 +171,30 @@ namespace CRAW {
         } else {
             return Post(id);
         }
+    }
+
+    std::multiset<std::string> Reddit::search (const std::string & query, bool exact, bool nsfw, bool autocomplete, int limit) {
+        if (limit < 0 || limit > 10) {
+            throw std::invalid_argument("The limit of results to return must be between 0 and 10.");
+        }
+        std::string endpoint = autocomplete ? "/api/subreddit_autocomplete_v2" : "/api/search_reddit_names";
+        nlohmann::json response = _sendrequest("GET", endpoint, {}, cpr::Parameters {{"exact", exact ? "true": "false"},
+                                                                                     {"include_over_18", nsfw ? "true" : "false"},
+                                                                                     {"include_unadvertisable", "true"},
+                                                                                     {"query", query},
+                                                                                     {"limit", std::to_string(limit)}});
+        std::multiset<std::string> results;
+        endpoint = response.dump();
+        if (!autocomplete) {
+            for (auto & i : response["names"]) {
+                results.insert(i.get<std::string>());
+            }
+        } else {
+            for (auto & i : response["data"]["children"]) {
+                results.insert(i["data"]["display_name"].get<std::string>());
+            }
+        }
+        return results;
     }
 
 }
