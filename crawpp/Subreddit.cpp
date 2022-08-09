@@ -86,8 +86,7 @@ namespace CRAW {
                 // API returned fewer posts than we asked for
                 break;
             }
-            Post post = Post(responsejson[i]["data"], _redditinstance);
-            postvector.push_back(post);
+            postvector.emplace_back(Post(responsejson[i]["data"], _redditinstance));
         }
         return postvector;
 
