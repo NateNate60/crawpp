@@ -59,7 +59,7 @@ namespace CRAW {
             @param name: The username of the Redditor
             @param redditinstance The Reddit instance to associate with the Redditor
             */
-            Redditor (const std::string & name, Reddit * redditinstance = nullptr);
+            Redditor (const std::string & name, Reddit * redditinstance);
 
             /**
             The [] operator is used to fetch information about a user. All information is returned as a std::string.

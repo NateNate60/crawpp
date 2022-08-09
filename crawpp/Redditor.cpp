@@ -9,36 +9,14 @@ using namespace CRAW;
 Redditor::Redditor (const std::string & name, Reddit * redditinstance) {
     
     nlohmann::json responsejson;
-    if (redditinstance == nullptr) {
-        std::string url = "https://api.reddit.com/user/";
-        url += name;
-        url += "/about";
-        cpr::Response response = cpr::Get(cpr::Url(url), cpr::Ssl(cpr::ssl::TLSv1_2()));
-        switch (response.status_code){
-            case 404:
-                throw NotFoundError("Could not find any user with username" + name + ".");
-            case 403:
-                throw UnauthorisedError("You aren't allowed to access u/" + name + ". Did you block this user?");
-            case 200:
-                responsejson = nlohmann::json::parse(response.text)["data"];
-                break;
-            default:
-                throw CommunicationError("The server responded with error " + std::to_string(response.status_code) + " while fetching Redditor information.");
-        }
-        
-        if (responsejson.is_null()) {
-            throw CommunicationError("The server gave a malformed response when fetching Redditor information.");
-        }
-    } else {
-        try {
-            responsejson = redditinstance->_sendrequest("GET", "/user/" + name + "/about")["data"];
-        } catch (const NotFoundError &) {
-            throw NotFoundError("Could not find any user with username" + name + ".");
-        } catch (const UnauthorisedError &) {
-            throw UnauthorisedError("You aren't allowed to access u/" + name + ". Did you block this user?");
-        } catch (const CommunicationError & error) {
-            throw CommunicationError(error.what() + std::string(" while fetching u/") + name + ".");
-        }
+    try {
+        responsejson = redditinstance->_sendrequest("GET", "/user/" + name + "/about")["data"];
+    } catch (const NotFoundError &) {
+        throw NotFoundError("Could not find any user with username" + name + ".");
+    } catch (const UnauthorisedError &) {
+        throw UnauthorisedError("You aren't allowed to access u/" + name + ". Did you block this user?");
+    } catch (const CommunicationError & error) {
+        throw CommunicationError(error.what() + std::string(" while fetching u/") + name + ".");
     }
 
     _redditinstance = redditinstance;
@@ -73,7 +51,7 @@ std::string Redditor::operator[] (const std::string & attribute) {
 }
 
 void Redditor::follow () {
-    if (_redditinstance == nullptr) {
+    if (!_redditinstance->authenticated) {
         throw NotLoggedInError("You must be logged in to follow someone.");
     }
     nlohmann::json body;
@@ -86,7 +64,7 @@ void Redditor::follow () {
 }
 
 void Redditor::unfollow () {
-    if (_redditinstance == nullptr) {
+    if (!_redditinstance->authenticated) {
         throw NotLoggedInError("You must be logged in to follow someone.");
     }
     nlohmann::json body;

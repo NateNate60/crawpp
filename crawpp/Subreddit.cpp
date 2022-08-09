@@ -10,31 +10,23 @@
 namespace CRAW {
 
     Subreddit::Subreddit (const std::string & subredditname, Reddit * redditinstance) {
-        if (redditinstance == nullptr) {
-            cpr::Response response = cpr::Get(cpr::Url("https://api.reddit.com/r/" + subredditname + "/about"), cpr::Ssl(cpr::ssl::TLSv1_2()));
-            switch (response.status_code) {
-                case 404:
-                    throw NotFoundError("Could not find a subreddit with name r/" + subredditname);
-                case 403:
-                    throw UnauthorisedError("You aren't allowed to access r/" + subredditname);
-                case 200:
-                    information = nlohmann::json::parse(response.text)["data"];
-                    break;
-                default:
-                    throw CommunicationError("The server responded with error " + std::to_string(response.status_code) + " while fetching subreddit information.");
-            }
-        } else {
+        try {
             information = redditinstance->_sendrequest("GET", "/r/" + subredditname + "/about")["data"];
-            if (!information["children"].is_null()) {
-                // the listing having "children" means it's actually a search listing
-                // and there isn't a subreddit with that exact name
-                std::string similars = "";
-                for (auto & i : information["children"]) {
-                    similars += " ";
-                    similars += i["data"]["display_name"];
-                }
-                throw NotFoundError("No subreddit named \"" + subredditname + "\" exists. Did you mean any of these?" + similars);
+        } catch (NotFoundError &) {
+            throw NotFoundError("Could not find a subreddit with name r/" + subredditname);
+        } catch (UnauthorisedError &) {
+            throw UnauthorisedError("You aren't allowed to access r/" + subredditname);
+        }
+
+        if (!information["children"].is_null()) {
+            // the listing having "children" means it's actually a search listing
+            // and there isn't a subreddit with that exact name
+            std::string similars = "";
+            for (auto & i : information["children"]) {
+                similars += " ";
+                similars += i["data"]["display_name"];
             }
+            throw NotFoundError("No subreddit named \"" + subredditname + "\" exists. Did you mean any of these?" + similars);
         }
         _redditinstance = redditinstance;
         name = information["display_name"];
@@ -78,16 +70,12 @@ namespace CRAW {
                     period != "all")) {
                         throw std::invalid_argument("Sorting by " + sort + " requires a valid period.");
         }
-        cpr::Response response = cpr::Get(cpr::Url("https:/api.reddit.com/r/" + name + "/" + sort), cpr::Ssl(cpr::ssl::TLSv1_2()));                                                  
-        switch (response.status_code) {
-            case 403:
-                throw UnauthorisedError("You don't have permission to look at r/" + name + " posts.");
-            case 200:
-                break;
-            default:
-                throw CommunicationError("The server responded to fetching r/" + name + " posts with error code " + std::to_string(response.status_code));
+        nlohmann::json responsejson;
+        try {
+            responsejson = _redditinstance->_sendrequest("GET", "/r/" + name + "/" + sort);
+        } catch (UnauthorisedError &) {
+            throw UnauthorisedError("You don't have permission to look at r/" + name + " posts.");
         }
-        nlohmann::json responsejson = nlohmann::json::parse(response.text)["data"]["children"];
         if (responsejson.is_null()) {
             throw CommunicationError("Malformed response from server when fetching r/" + name + " posts.");
         }
@@ -111,7 +99,7 @@ namespace CRAW {
     Post Subreddit::post (const std::string & title,
                         const std::string & contents,
                         const PostOptions & options) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to make a post.");
         }
         if (options.event_start == 0 && options.event_end != 0 || options.event_start != 0 && options.event_end == 0) {
@@ -191,7 +179,7 @@ namespace CRAW {
     }
 
     Subreddit & Subreddit::subscribe (bool skip_initial_defaults) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to subscribe to r/" + name + ".");
         }
 
@@ -204,7 +192,7 @@ namespace CRAW {
     }
 
     Subreddit & Subreddit::unsubscribe () {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to unsubscribe to r/" + name + ".");
         }
 
@@ -228,7 +216,7 @@ namespace CRAW {
                                 int length, 
                                 const std::string & reason,
                                 const std::string & modnote) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to ban a user from a subreddit.");
         }
         if (length > 999 || length < 0) {
@@ -256,7 +244,7 @@ namespace CRAW {
     }
 
     Subreddit & Subreddit::unban (const std::string & username, const std::string & fullname) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to unban a user from a subreddit.");
         }
         std::string subject = fullname;

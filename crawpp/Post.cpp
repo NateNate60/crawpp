@@ -36,19 +36,15 @@ namespace CRAW {
     }
 
     Post::Post (const std::string & id, Reddit * redditinstance) {
-
-        cpr::Response response = cpr::Get(cpr::Url("https://api.reddit.com/" + id));
-        switch (response.status_code) {
-            case 404:
-                throw NotFoundError("No such post with ID " + id);
-            case 403:
-                throw UnauthorisedError("You are not authorised to view the post with ID " + id);
-            case 200:
-                break;
-            default:
-                throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.status_code));
+        nlohmann::json responsejson;
+        try {
+            responsejson = redditinstance->_sendrequest("GET", "https://api.reddit.com/" + id);
+        } catch (NotFoundError &) {
+            throw NotFoundError("No such post with ID " + id);
+        } catch (UnauthorisedError &) {
+            throw UnauthorisedError("You are not authorised to view the post with ID " + id);
         }
-        nlohmann::json responsejson = nlohmann::json::parse(response.text);
+
         if (responsejson[0]["data"].is_null()) {
             throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
         }
@@ -62,18 +58,15 @@ namespace CRAW {
 
     std::vector<Comment> Post::comments (const std::string & sort, const unsigned int limit) {
         if (_comments.is_null()) {
-            cpr::Response response = cpr::Get(cpr::Url("https://api.reddit.com"));
-            switch (response.status_code) {
-                case 404:
-                    throw NotFoundError("No such post with ID " + id);
-                case 403:
-                    throw UnauthorisedError("You are not authorised to view the post with ID " + id);
-                case 200:
-                    break;
-                default:
-                    throw CommunicationError("The server responded to an attempt to get post with ID " + id + " with error code " + std::to_string(response.status_code));
+            nlohmann::json responsejson;
+            try {
+                responsejson = _redditinstance->_sendrequest("GET", "/" + id)[1]["data"]["children"];
+            } catch (NotFoundError &) {
+                throw NotFoundError("No such post with ID " + id);
+            } catch (UnauthorisedError &) {
+                throw UnauthorisedError("You are not authorised to view the post with ID " + id);
             }
-            nlohmann::json responsejson = nlohmann::json::parse(response.text)[1]["data"]["children"];
+
             if (responsejson.is_null()) {
                 throw CommunicationError("Received a malformed response from the server when attempting to get post with ID " + id);
             }

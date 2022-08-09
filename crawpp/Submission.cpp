@@ -10,7 +10,7 @@
 
 namespace CRAW {
     Comment Submission::reply (const std::string & contents, bool distinguish) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to leave a reply.");
         }
         nlohmann::json body = {};
@@ -26,7 +26,7 @@ namespace CRAW {
     }
 
     void Submission::remove (bool spam) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to remove a submission.");
         }
         nlohmann::json body = {};
@@ -36,7 +36,7 @@ namespace CRAW {
     }
 
     void Submission::del () {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to delete a submission.");
         }
         nlohmann::json body = {};
@@ -45,7 +45,7 @@ namespace CRAW {
     }
 
     Submission & Submission::edit (const std::string & newcontents) {
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to edit a submission.");
         }
         nlohmann::json body = {};
@@ -70,7 +70,7 @@ namespace CRAW {
         // 1 for upvote, -1 for downvote, 0 for clear, everything else is undefined
         assert(direction >= 1 && direction <= -1);
 
-        if (_redditinstance == nullptr) {
+        if (!_redditinstance->authenticated) {
             throw NotLoggedInError("You must be logged in to edit a submission.");
         }
         nlohmann::json body = {};

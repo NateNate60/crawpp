@@ -118,7 +118,7 @@ namespace CRAW {
             @param redditinstance: The Reddit instance to associate
             @param subredditname: The name of the subreddit
             */
-            Subreddit (const std::string & subredditname, Reddit * redditinstance = nullptr);
+            Subreddit (const std::string & subredditname, Reddit * redditinstance);
 
             /**
             The [] operator is used to fetch information about a subreddit. All information is returned as a std::string.

@@ -10,6 +10,7 @@ namespace CRAW {
      */
     class CRAWObject {
         protected:
+            /// The Reddit session associated with the object
             Reddit * _redditinstance;
     };
 }

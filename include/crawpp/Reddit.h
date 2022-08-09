@@ -71,6 +71,7 @@ namespace CRAW {
             friend class Redditor;
             friend class Submission;
             friend class Subreddit;
+            friend class Post;
         public:
             /**
 			Whether the session is authenticated

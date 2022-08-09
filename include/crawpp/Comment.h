@@ -24,7 +24,7 @@ namespace CRAW {
              * @param redditinstance The Reddit instance to associate
              * @param data The "data" field of the API response for the comment, inside "children"
              */
-            Comment (const nlohmann::json & data, Reddit * redditinstance = nullptr);
+            Comment (const nlohmann::json & data, Reddit * redditinstance);
             
             /**
              * Fetch the replies to a comment

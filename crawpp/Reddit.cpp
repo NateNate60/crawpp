@@ -148,29 +148,16 @@ namespace CRAW {
     }
 
     Redditor Reddit::redditor (const std::string & name) {
-        // Associate with the current session only if authenticated
-        if (authenticated) {
-            return Redditor(name, this);
-        }
-        return Redditor(name);
+        return Redditor(name, this);
     }
 
     Subreddit Reddit::subreddit (const std::string & name) {
-        // Associate with the current session only if authenticated
-        if (authenticated) {
-            return Subreddit(name, this);
-        } else {
-            return Subreddit(name);
-        }
+        return Subreddit(name, this);
     }
 
     Post Reddit::post (const std::string & id) {
-        // Associate with the current session only if authenticated
-        if (authenticated) {
-            return Post(id, this);
-        } else {
-            return Post(id);
-        }
+        return Post(id, this);
+
     }
 
     std::multiset<std::string> Reddit::search (const std::string & query, bool exact, bool nsfw, bool autocomplete, int limit) {

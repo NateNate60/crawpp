@@ -25,7 +25,7 @@ namespace CRAW {
     std::vector<Comment> Comment::replies () {
         std::vector<Comment> replylist = {};
         for (auto & i : information["replies"]["data"]["children"]) {
-            replylist.push_back(i["data"]);
+            replylist.push_back(Comment(i["data"], _redditinstance));
         }
         return replylist;
     }

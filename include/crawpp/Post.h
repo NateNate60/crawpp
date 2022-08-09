@@ -48,7 +48,7 @@ namespace CRAW {
              * @param data The "data" field of the API response, as a JSON object
              * @param redditinstance The Reddit instance to associate with the post
              */
-            Post (nlohmann::json & data, Reddit * redditinstance = nullptr);
+            Post (nlohmann::json & data, Reddit * redditinstance);
 
             /**
             Fetch a post with the given ID, associated with a given Reddit instance.
@@ -56,7 +56,7 @@ namespace CRAW {
             @param redditinstance: The Reddit instance to associate
             @param id: The ID of the post to fetch
             */
-            Post (const std::string & id, Reddit * redditinstance = nullptr);
+            Post (const std::string & id, Reddit * redditinstance);
 
             /**
             Fetches the top-level comments of a post, sorted in the specified way, up to the specified limit
