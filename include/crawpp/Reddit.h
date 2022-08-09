@@ -94,7 +94,7 @@ namespace CRAW {
             std::string clientid;
 
             /**
-            Passing arguments to the initialiser indicates authenticating (logging in) with Reddit. The credentials are not checked until the first request is made.
+            @brief Initialise an authenticated Reddit instance
             
             @param user_name: The username of the account to authenticate with
             @param password: The password of the account to log in with
@@ -109,9 +109,11 @@ namespace CRAW {
                     const std::string & user_agent);
 
             /**
-			Passing no arguments to the initialiser indicates not authenticating with Reddit
+			@brief Initialise an unauthenticated (anonymous) Reddit instance
+
+            @param user_agent Any string except empty. It will be used as the user agent and associated with the current session.
 			*/
-            Reddit ();
+            Reddit (const std::string & user_agent);
 
             /**
             Returns a Redditor instance of the current user.

@@ -32,9 +32,9 @@ namespace CRAW {
     }
 
 
-    Reddit::Reddit () {
+    Reddit::Reddit (const std::string & user_agent) {
         this->username = "";
-        this->useragent = "";
+        this->useragent = user_agent;
         this->clientid = "";
         this->_apisecret = "";
         this->_password = "";
@@ -76,9 +76,16 @@ namespace CRAW {
         cpr::SslOptions tls = cpr::Ssl(cpr::ssl::TLSv1_2());
 
         cpr::Header header;
-        header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
+        cpr::Url url;
+        if (authenticated) {
+            header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
+            url = "https://oauth.reddit.com" + targeturl;
+        } else {
+            header = {{"User-Agent", useragent}};
+            url = "https://api.reddit.com" + targeturl;
+        }
+
         
-        cpr::Url url = "https://oauth.reddit.com" + targeturl;
         cpr::Response response;
         if (method == "GET") {
             response = cpr::Get(url, header, tls);
@@ -119,9 +126,16 @@ namespace CRAW {
         cpr::SslOptions tls = cpr::Ssl(cpr::ssl::TLSv1_2());
 
         cpr::Header header;
-        header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
+        cpr::Url url;
+        if (authenticated) {
+            header = {{"User-Agent", useragent}, {"Authorization", "bearer " + _token}};
+            url = "https://oauth.reddit.com" + targeturl;
+        } else {
+            header = {{"User-Agent", useragent}};
+            url = "https://api.reddit.com" + targeturl;
+        }
+
         
-        cpr::Url url = "https://oauth.reddit.com" + targeturl;
         cpr::Response response;
         if (method == "GET") {
             response = cpr::Get(url, header, parameters, tls);
