@@ -17,40 +17,40 @@ namespace CRAW {
      * contains spoilers. Default values are sane.
      */
     struct PostOptions {
-        /// Whether the post is an advert
+        /// Whether the post is an advert (default: false)
         bool ad;
 
-        /// The UUID of the collection to be associated with the post
+        /// The UUID of the collection to be associated with the post (default: "")
         std::string collection_id;
 
-        /// The local time the event starts
+        /// The local time the event starts (default: 0, which is none)
         time_t event_start;
 
-        /// The local time the event ends
+        /// The local time the event ends (default: 0, which is none)
         time_t event_end;
 
-        /// The pytz time zone of the event, such as "America/Los_Angeles"
+        /// The pytz time zone of the event, such as "America/Los_Angeles" (default: "", which is none)
         std::string event_timezone;
 
-        /// The ID of the flair to use
+        /// The ID of the flair to use (default: "", which is none)
         std::string flair_id;
 
-        /// The text to put in the flair (max 64 chars)
+        /// The text to put in the flair (max 64 chars, default: "")
         std::string flair_text;
 
-        /// "text" for text posts, "link" for everything else
+        /// "text" for text posts, "link" for everything else (default: "text")
         std::string type;
         
-        /// Whether the post is not safe for work (e.g. contains gore or nudity)
+        /// Whether the post is not safe for work (e.g. contains gore or nudity, default: false)
         bool nsfw;
 
-        /// Whether the post is a resubmit
+        /// Whether the post is a resubmit (default: false)
         bool resubmit;
 
-        /// Whether replies should be sent to the inbox
+        /// Whether replies should be sent to the inbox (default: true)
         bool get_inbox_replies;
 
-        /// Whether the post contains spoilers (e.g. plot details of a newly-released film)
+        /// Whether the post contains spoilers (e.g. plot details of a newly-released film, default: false)
         bool spoiler;
 
         PostOptions () {
