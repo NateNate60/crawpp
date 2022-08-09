@@ -5,8 +5,9 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-#include "crawpp/Reddit.h"
 #include "crawpp/CRAWObject.h"
+#include "crawpp/Reddit.h"
+#include "crawpp/Rule.h"
 
 namespace CRAW {
 
@@ -214,5 +215,13 @@ namespace CRAW {
              * @return A reference to the Subreddit instance for the subreddit that the user was just banned form
              */
             Subreddit & unban (const std::string & username, const std::string & fullname = "");
+
+
+            /**
+             * @brief Fetch the subreddit rules
+             * 
+             * @return std::vector<Rule> The rules of the subreddit
+             */
+            std::vector<Rule> rules ();
     };
 }

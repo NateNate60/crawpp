@@ -2,6 +2,7 @@
 #include <cpr/cpr.h>
 
 #include "crawpp/Subreddit.h"
+#include "crawpp/Rule.h"
 #include "crawpp/Post.h"
 #include "crawpp/Redditor.h"
 #include "crawpp/crawexceptions.hpp"
@@ -269,5 +270,21 @@ namespace CRAW {
             throw UnauthorisedError("You are not allowed to unban " + username + " from r/" + name + ".");
         }
         return *this;
+    }
+
+    std::vector<Rule> Subreddit::rules () {
+        nlohmann::json response = _redditinstance->_sendrequest("GET", "/r/" + name + "/about/rules");
+        std::vector<Rule> rules;
+        for (auto & i : response["rules"]) {
+            Rule rule;
+            rule.kind = i["kind"].get<std::string>();
+            rule.description = i["description"].get<std::string>();
+            rule.name = i["short_name"].get<std::string>();
+            rule.report_reason = i["violation_reason"].get<std::string>();
+            rule.created = i["created_utc"].get<time_t>();
+            rule.number = i["priority"].get<int>();
+            rules.emplace_back(rule);
+        }
+        return rules;
     }
 }
