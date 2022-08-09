@@ -185,7 +185,6 @@ namespace CRAW {
                                                                                      {"query", query},
                                                                                      {"limit", std::to_string(limit)}});
         std::multiset<std::string> results;
-        endpoint = response.dump();
         if (!autocomplete) {
             for (auto & i : response["names"]) {
                 results.insert(i.get<std::string>());
