@@ -10,7 +10,7 @@ namespace CRAW {
     @brief Models a Reddit submission. Post and Comment
     inherit from this class.
 
-    This class should not be directly instantiated.
+    @warning This class should not be directly instantiated.
     */
     class Submission : public CRAWObject{
         private:
