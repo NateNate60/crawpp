@@ -2,6 +2,7 @@
 The sole purpose of this file is to #include all the other
 header files to make it easier to test this library.
 */
+#pragma once
 
 #include "crawpp/Reddit.h"
 #include "crawpp/Redditor.h"
