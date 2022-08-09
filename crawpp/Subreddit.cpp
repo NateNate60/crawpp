@@ -5,6 +5,7 @@
 #include "crawpp/Rule.h"
 #include "crawpp/Post.h"
 #include "crawpp/Redditor.h"
+#include "crawpp/ListingPage.hpp"
 #include "crawpp/crawexceptions.hpp"
 
 namespace CRAW {
@@ -54,7 +55,15 @@ namespace CRAW {
 
     std::vector<Post> Subreddit::posts (const std::string & sort,
                                         const std::string & period,
-                                        const unsigned short limit) {
+                                        const int limit,
+                                        ListingPage * listingpage,
+                                        const std::string & direction) {
+        if (limit < 0 || limit > 100) {
+            throw std::invalid_argument("limit must be a number in [0, 100], not " + std::to_string(limit));
+        }
+        if (listingpage != nullptr && direction != "after" && direction != "before") {
+            throw std::invalid_argument("The direction must be either \"after\" or \"before\", not " + direction);
+        }
         if (sort != "hot" &&
             sort != "rising" &&
             sort != "top" &&
@@ -72,7 +81,11 @@ namespace CRAW {
         }
         nlohmann::json responsejson;
         try {
-            responsejson = _redditinstance->_sendrequest("GET", "/r/" + name + "/" + sort);
+            cpr::Parameters parameters = {};
+            if (listingpage != nullptr) {
+                parameters = direction == "after" ? cpr::Parameters{{"after", listingpage->after}} : cpr::Parameters{{"before", listingpage->before}};
+            }
+            responsejson = _redditinstance->_sendrequest("GET", "/r/" + name + "/" + sort, {}, parameters);
         } catch (errors::UnauthorisedError &) {
             throw errors::UnauthorisedError("You don't have permission to look at r/" + name + " posts.");
         }

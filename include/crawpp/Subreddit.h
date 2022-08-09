@@ -8,13 +8,16 @@
 #include "crawpp/CRAWObject.h"
 #include "crawpp/Reddit.h"
 #include "crawpp/Rule.h"
+#include "crawpp/ListingPage.hpp"
 
 namespace CRAW {
 
     /**
-     * @brief A structure representing the options for a post, containing
-     * information such as the flair or whether the post is NSFW or 
-     * contains spoilers. Default values are sane.
+     * @brief A structure representing the options for a post.
+     * 
+     * This structure contains information such as the flair or 
+     * whether the post is NSFW or contains spoilers. The default 
+     * values are sane.
      */
     struct PostOptions {
         /// Whether the post is an advert (default: false)
@@ -139,15 +142,28 @@ namespace CRAW {
             std::string operator[] (const std::string & attribute);
 
             /**
-            Fetches posts sorted in the specified way, up to the specified limit (default: 25 + pinned posts if sorting by hot)
+            Fetches posts sorted in the specified way, up to the specified limit (default: 25 + pinned posts if sorting by hot).
+
+            If desired, it is possible to flip through pages of listings by passing in a pointer to a ListingPage struct to the
+            listingpage argument, and then specifying whether to return the page after that page or before that page in the direction
+            argument.
 
             @param sort: How to sort the results (default: hot)
             @param period "hour", "day", "week", "month", "year", or "all". Used when sorting by top or controversial
             @param limit: How many posts to fetch (default: 25, max: 100)
+            @param listingpage A pointer to a ListingPage struct, which can be used to flip forwards/backwards through pages of
+            listings (defaut: nullptr, which means the first page). If provided, then the ListingPage for the page returned will
+            be stored at whatever listingpage points to. To return the first page, initialise a blank ListingPage object and pass
+            the address of that. The ListingPage will also be updated to refer to the first page, so that the second page can be
+            retrieved by passing it to another posts() call.
+            @param direction Whether to return the page after the page provided in listingpage, or the page before
+            (either "after" or "before", default: "after"). Ignored if listingpage is nullptr.
             */
             std::vector<Post> posts (const std::string & sort = "hot",
                                      const std::string & period = "all",
-                                     const unsigned short limit = 25);
+                                     const int limit = 25,
+                                     ListingPage * listingpage = nullptr,
+                                     const std::string & direction = "after");
 
             /**
              * @brief Make a new post on a subreddit. Returns the newly-made post as a Post instance
