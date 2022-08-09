@@ -92,14 +92,16 @@ namespace CRAW {
         if (responsejson.is_null()) {
             throw errors::CommunicationError("Malformed response from server when fetching r/" + name + " posts.");
         }
+
+        if (listingpage != nullptr) {
+            listingpage->after = responsejson["data"]["after"];
+            listingpage->before = responsejson["data"]["before"];
+        }
+
         std::vector<Post> postvector = {};
 
-        for (short i = 0; i < limit; i++) {
-            if (responsejson[i].is_null()) {
-                // API returned fewer posts than we asked for
-                break;
-            }
-            postvector.emplace_back(Post(responsejson[i]["data"], _redditinstance));
+        for (auto & i : responsejson["data"]["children"]) {
+            postvector.emplace_back(Post(i["data"], _redditinstance));
         }
         return postvector;
 
