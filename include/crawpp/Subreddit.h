@@ -15,32 +15,44 @@ namespace CRAW {
      * @brief A structure representing the options for a post, containing
      * information such as the flair or whether the post is NSFW or 
      * contains spoilers. Default values are sane.
-     * 
-     * @param ad Whether the post is an advert
-     * @param collection_id The UUID of the collection to be associated with the post
-     * @param event_start The local time the event starts
-     * @param event_end The local time the event ends
-     * @param event_tz The time zone of the event, such as "America/Los_Angeles"
-     * @param flair_id The ID of the flair to use
-     * @param flair_text The text to put in the flair (max 64 chars)
-     * @param type "text" for text posts, "link" for everything else
-     * @param resubmit 
-     * @param inbox_replies Whether replies should be sent to the inbox
-     * @param spoiler Whether to mark the post as containing spoilers
      */
     struct PostOptions {
+        /// Whether the post is an advert
         bool ad;
+
+        /// The UUID of the collection to be associated with the post
         std::string collection_id;
+
+        /// The local time the event starts
         time_t event_start;
+
+        /// The local time the event ends
         time_t event_end;
+
+        /// The pytz time zone of the event, such as "America/Los_Angeles"
         std::string event_timezone;
+
+        /// The ID of the flair to use
         std::string flair_id;
+
+        /// The text to put in the flair (max 64 chars)
         std::string flair_text;
+
+        /// "text" for text posts, "link" for everything else
         std::string type;
+        
+        /// Whether the post is not safe for work (e.g. contains gore or nudity)
         bool nsfw;
+
+        /// Whether the post is a resubmit
         bool resubmit;
+
+        /// Whether replies should be sent to the inbox
         bool get_inbox_replies;
+
+        /// Whether the post contains spoilers (e.g. plot details of a newly-released film)
         bool spoiler;
+
         PostOptions () {
             ad = false;
             collection_id = "";
