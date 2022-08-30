@@ -35,5 +35,5 @@
 .vscode/*
 
 # Doxygen documentation
-html/crawpp/*
-latex/*
+doc/html/crawpp/*
+doc/latex/*
