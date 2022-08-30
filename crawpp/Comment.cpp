@@ -2,7 +2,7 @@
 
 #include "crawpp/Reddit.h"
 #include "crawpp/Comment.h"
-#include "crawpp/Award.h"
+#include "crawpp/Award.hpp"
 
 namespace CRAW {
     Comment::Comment (const nlohmann::json & data, Reddit * redditinstance) {
