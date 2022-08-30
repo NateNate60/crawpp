@@ -25,9 +25,9 @@ The makefile only works with **GCC**. Any recent version of GCC will work. It mu
 
 **Precompiled library**
 
-A `.deb` package is available for 64-bit Debian and Debian-based operating systems (such as Ubuntu). Simply install this package in the usual `apt install` fashion.
+A `.deb` package is available for 64-bit Debian and Debian-based operating systems (such as Ubuntu). Simply install this package in the usual `apt install` fashion. That's all that needs to be done! This package was tested on Ubuntu 22.04 and Debian 11. Support is not guaranteed on any other distributions.
 
-Note that this package does not install `libcpr` because `libcpr` is not found in Debian or Ubuntu's default repositories. Please follow the directions at [libcpr/cpr](https://github.com/libcpr/cpr/) to install `libcpr`.
+This package will also download, compile, and install `libcpr` from its GitHub repository. If you don't want this, don't install the `.deb` package.
 
 **Making the `.deb` package**
 
