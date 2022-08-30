@@ -1,0 +1,12 @@
+#!/bin/bash
+
+wget -q https://github.com/libcpr/cpr/archive/refs/tags/1.9.1.tar.gz
+tar -xf 1.9.1.tar.gz
+cd cpr-1.9.1
+mkdir build
+cd build
+cmake ..
+make
+make install
+cd ../..
+rm cpr-1.9.1 -r

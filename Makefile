@@ -1,10 +1,10 @@
-VERSION = 0.1alpha-2
+VERSION = 0.2alpha-1
 
 INCLUDEPATH = ./include
 STANDARD = c++17
 SOURCE = ./crawpp
 OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o Submission.o
-HEADERS = $(INCLUDE)/Award.h  $(INCLUDE)/Comment.h  $(INCLUDE)/crawexceptions.hpp  $(INCLUDE)/craw.h  $(INCLUDE)/Post.h  $(INCLUDE)/Reddit.h  $(INCLUDE)/Redditor.h  $(INCLUDE)/Submission.h  $(INCLUDE)/Subreddit.h
+HEADERS = $(INCLUDE)/Award.hpp  $(INCLUDE)/Comment.h  $(INCLUDE)/crawexceptions.hpp  $(INCLUDE)/craw.h  $(INCLUDE)/Post.h  $(INCLUDE)/Reddit.h  $(INCLUDE)/Redditor.h  $(INCLUDE)/Submission.h  $(INCLUDE)/Subreddit.h
 INCLUDE = $(INCLUDEPATH)/crawpp
 EXEARGS = -g -I$(INCLUDEPATH) -L$(SOURCE) --std=$(STANDARD)
 ARGS = -c $(EXEARGS)
@@ -33,7 +33,7 @@ Submission.o: $(SOURCE)/Submission.cpp $(INCLUDE)/Submission.h $(INCLUDE)/crawex
 	g++ $(ARGS) $(SOURCE)/Submission.cpp
 
 a.out: test.cpp libcrawpp.a
-	g++ $(EXEARGS) test.cpp -lcrawpp -lcpr
+	g++ $(EXEARGS) -L. test.cpp -lcrawpp -lcpr
 
 install: libcrawpp.a
 	cp libcrawpp.a /usr/local/lib
@@ -57,9 +57,10 @@ debpackage: libcrawpp.a $(HEADERS)
 	cp control $(PACKAGE)/DEBIAN
 	mkdir $(PACKAGE)/usr/share/doc/libcrawpp/ -p
 	cp LICENSE $(PACKAGE)/usr/share/doc/libcrawpp/copyright
+	cp postinst $(PACKAGE)/DEBIAN
 	dpkg-deb --build --root-owner-group $(PACKAGE)
 	rm $(PACKAGE) -r
 
 docs:
 	doxygen Doxyfile
-	scp -qr html/crawpp nate@natenate60.xyz:/var/www/html
+	scp -qr doc/html/crawpp nate@natenate60.xyz:/var/www/html
