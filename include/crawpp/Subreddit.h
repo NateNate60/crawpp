@@ -76,6 +76,24 @@ namespace CRAW {
     @brief Represents a subreddit
     */
     class Subreddit : public CRAWObject{
+        private:
+            /**
+             * @brief Upload media to Reddit.
+             * 
+             * This API method was not documented by Reddit. The implementation used here
+             * mirrors that of PRAW, the Python Reddit API Wrapper (BSD 2-clause license).
+             * 
+             * @param mediapath The path to some media to upload, such as
+             * an image or video.
+             * @param caption A caption to associate with the media (default: "") 
+             * 
+             * @note The media path must use forward slashes (/), not backward slashes (\).
+             * @warning The media path can't contain non-ASCII characters.
+             * 
+             * @return A string containing the uploaded image's URL
+             */
+            std::string _upload (const std::string & mediapath, const std::string & caption = "");
+
         public:
             /**
 			Stores info about the subreddit
@@ -169,13 +187,38 @@ namespace CRAW {
              * @brief Make a new post on a subreddit. Returns the newly-made post as a Post instance
              * 
              * @param title The title of the post
-             * @param contents The contents of the post
+             * @param contents The contents of the post (Markdown text for text posts, 
+             * a URL for link posts, or a path to some media for image or video posts)
+             * @param type The type of post, either "link" or "text" (default: "text").
              * @param options A PostOptions struct containing the options for the post
              * @return Post instance of the newly-created post
+             * 
+             * @note To create a media (image or video) post, use postmedia(). You can 
+             * still make posts that link to media using this method, however, to 
+             * upload media to Reddit, use postmedia() instead. 
              */
             Post post (const std::string & title,
                        const std::string & contents,
+                       const std::string & type = "text",
                        const PostOptions & options = PostOptions());
+            
+
+            /**
+             * @brief Upload media and make a new post on a subreddit.
+             * 
+             * @param title The title of the post
+             * @param contents The filepath to the content of the post
+             * @param type The type of the post, either "image" or "video" (default: "image").
+             * @param options A PostOptions struct containing the options for the post
+             * 
+             * @note To make a text or link post, use post() instead. Only use this message if
+             * media needs to be uploaded. Posts that merely link to some media (like a YouTube
+             * video) should be made with post().
+             */
+            void postmedia (const std::string & title,
+                            const std::string & contents,
+                            const std::string & type = "image",
+                            const PostOptions & options = PostOptions());
             
             /**
             Subscribe to a subreddit. Returns a reference to the subreddit so that

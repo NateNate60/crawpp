@@ -16,6 +16,7 @@ namespace CRAW {
         |   |_ModerationError
         |   |   |_BanError
         |   |      |_BanDurationError
+        |_FileOperationError
         */
 
 
@@ -161,6 +162,17 @@ namespace CRAW {
             public:
                 BanDurationError (const std::string & what = "") : BanError(what) {}
                 BanDurationError (const char * what) : BanError(what) {}
+        };
+
+        /**
+         * @brief FileOperationError is thrown if an attempt to open a local file for
+         * reading or writing fails or would fail (such as when a malformed file path
+         * is provided).
+         */
+        class FileOperationError : public CRAWError {
+            public: 
+                FileOperationError (const std::string & what = "") : CRAWError(what) {}
+                FileOperationError (const char * what) : CRAWError(what) {}
         };
     }
 }

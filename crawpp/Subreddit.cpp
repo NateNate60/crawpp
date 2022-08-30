@@ -1,5 +1,7 @@
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
+#include <fstream>
+#include <map>
 
 #include "crawpp/Subreddit.h"
 #include "crawpp/Rule.h"
@@ -9,6 +11,58 @@
 #include "crawpp/crawexceptions.hpp"
 
 namespace CRAW {
+
+    std::string Subreddit::_upload (const std::string & mediapath, const std::string & caption) {
+        std::string mimetype;
+        // gets the filename extension
+        try {
+            mimetype = mediapath.substr(mediapath.find_last_of("/")).substr(mediapath.find_last_of("."));
+        } catch (std::exception) {
+            throw errors::FileOperationError("Error while parsing file path \"" + mediapath + "\".");
+        }
+        // converts the filename extension to lowercase
+        // https://stackoverflow.com/questions/313970/how-to-convert-an-instance-of-stdstring-to-lower-case
+        std::transform(mimetype.begin(), mimetype.end(), mimetype.begin(),[](char i){return std::tolower(i);});
+
+        // translation from filename extension to mimetype
+        if (mimetype == "jpg" || mimetype == "jpeg") {
+            mimetype = "image/jpeg";
+        } else if (mimetype == "png") {
+            mimetype = "image/png";
+        } else if (mimetype == "gif") {
+            mimetype = "image/gif";
+        } else if (mimetype == "mov") {
+            mimetype = "video/quicktime";
+        } else if (mimetype == "mp4") {
+            mimetype = "video/mp4";
+        }
+
+        nlohmann::json response = _redditinstance->_sendrequest("POST", "/api/media/asset.json", 
+                                                                cpr::Payload{{"filepath", mediapath}, 
+                                                                             {"mimetype", mimetype}});
+        std::string uploadurl = "http:" + response["args"]["action"].get<std::string>();
+        const nlohmann::json & fields = response["args"]["fields"];
+
+        nlohmann::json uploaded = cpr::Post(cpr::Url(uploadurl),
+                                            cpr::Multipart {
+                                                {"acl", "private"},
+                                                {"key", fields[1]["value"].get<std::string>()},
+                                                {"X-Amz-Credential", fields[2]["value"].get<std::string>()},
+                                                {"X-Amz-Algorithm", fields[3]["value"].get<std::string>()},
+                                                {"X-Amz-Date", fields[4]["value"].get<std::string>()},
+                                                {"success_action_status", fields[5]["value"].get<std::string>()},
+                                                {"content-type", fields[6]["value"].get<std::string>()},
+                                                {"x-amz-storage-class", fields[7]["value"].get<std::string>()},
+                                                {"x-amz-meta-ext", fields[8]["value"].get<std::string>()},
+                                                {"policy", fields[9]["value"].get<std::string>()},
+                                                {"X-Amz-Signature", fields[10]["value"].get<std::string>()},
+                                                {"x-amz-security-token", fields[11]["value"].get<std::string>()},
+                                                {"file", cpr::File(mediapath)}
+                                            }
+                                           ).text;
+        std::string imageurl = uploadurl + "/" + fields[1]["value"].get<std::string>();
+        return imageurl;
+    }
 
     Subreddit::Subreddit (const std::string & subredditname, Reddit * redditinstance) {
         try {
@@ -111,8 +165,12 @@ namespace CRAW {
 
 
     Post Subreddit::post (const std::string & title,
-                        const std::string & contents,
-                        const PostOptions & options) {
+                          const std::string & contents,
+                          const std::string & type,
+                          const PostOptions & options) {
+        if (type != "text" && type != "link") {
+            throw std::invalid_argument("Post type must be \"text\" or \"link\", not " + type + ". To make a media post, use postmedia().");
+        }
         if (!_redditinstance->authenticated) {
             throw errors::NotLoggedInError("You must be logged in to make a post.");
         }
@@ -122,7 +180,17 @@ namespace CRAW {
         if (options.event_start != 0 && options.event_timezone == "") {
             throw errors::PostingError("A time zone was not specified.");
         }
-        cpr::Payload payload = {};
+        cpr::Payload payload = {{"title", title}, 
+                                {"text", contents}, {"url", contents},
+                                {"ad", std::to_string(options.ad)},
+                                {"collection_id", options.collection_id},
+                                {"flair_id", options.flair_id},
+                                {"kind", options.type == "text" ? "self" : "link"},
+                                {"nsfw", std::to_string(options.nsfw)},
+                                {"resubmit", std::to_string(options.resubmit)},
+                                {"sendreplies", std::to_string(options.get_inbox_replies)},
+                                {"spoiler", std::to_string(options.spoiler)},
+                                {"sr", name}};
         if (options.event_start != 0) {
 
             // It's only a maximum of 20 characters long but better safe than sorry
@@ -134,31 +202,15 @@ namespace CRAW {
             strftime(startstring, 24, "%FT%T", localtime(&options.event_start));
             strftime(endstring, 24, "%FT%T", localtime(&options.event_end));
 
-            payload = {{"title", title}, 
-                    {"text", contents}, {"url", contents},
-                    {"ad", std::to_string(options.ad)},
-                    {"collection_id", options.collection_id},
-                    {"flair_id", options.flair_id},
-                    {"kind", options.type == "text" ? "self" : "link"},
-                    {"nsfw", std::to_string(options.nsfw)},
-                    {"resubmit", std::to_string(options.resubmit)},
-                    {"sendreplies", std::to_string(options.get_inbox_replies)},
-                    {"spoiler", std::to_string(options.spoiler)},
-                    {"sr", name},
-                    {"event_start", startstring},
-                    {"event_end", endstring}};
+            payload.Add({"event_start", startstring});
+            payload.Add({"event_end", endstring});
+        }
+
+        if (type == "text") {
+            payload.Add({"kind", "self"});
         } else {
-            payload = {{"title", title}, 
-                    {"text", contents}, {"url", contents},
-                    {"ad", std::to_string(options.ad)},
-                    {"collection_id", options.collection_id},
-                    {"flair_id", options.flair_id},
-                    {"kind", options.type == "text" ? "self" : "link"},
-                    {"nsfw", std::to_string(options.nsfw)},
-                    {"resubmit", std::to_string(options.resubmit)},
-                    {"sendreplies", std::to_string(options.get_inbox_replies)},
-                    {"spoiler", std::to_string(options.spoiler)},
-                    {"sr", name}};
+            payload.Add({"kind", "link"});
+            payload.Add({"url", contents});
         }
 
         nlohmann::json response = _redditinstance->_sendrequest("POST", "/api/submit", payload);
@@ -190,6 +242,78 @@ namespace CRAW {
         //
         // ...and the ID is always 6 characters long
         return Post(posturl.substr(25 + name.length() + 10, 6), _redditinstance);
+    }
+
+    void Subreddit::postmedia (const std::string & title,
+                               const std::string & contents,
+                               const std::string & type,
+                               const PostOptions & options) {
+        if (!_redditinstance->authenticated) {
+            throw errors::NotLoggedInError("You must be logged in to make a post.");
+        }
+        if (options.event_start == 0 && options.event_end != 0 || options.event_start != 0 && options.event_end == 0) {
+            throw errors::PostingError("Either both event_start and event_end must be specified, or neither, but not one.");
+        }
+        if (options.event_start != 0 && options.event_timezone == "") {
+            throw errors::PostingError("A time zone was not specified.");
+        }
+        cpr::Payload payload = {{"title", title}, 
+                                {"text", contents}, {"url", contents},
+                                {"ad", std::to_string(options.ad)},
+                                {"collection_id", options.collection_id},
+                                {"flair_id", options.flair_id},
+                                {"kind", options.type == "text" ? "self" : "link"},
+                                {"nsfw", std::to_string(options.nsfw)},
+                                {"resubmit", std::to_string(options.resubmit)},
+                                {"sendreplies", std::to_string(options.get_inbox_replies)},
+                                {"spoiler", std::to_string(options.spoiler)},
+                                {"sr", name}};
+        if (options.event_start != 0) {
+
+            // It's only a maximum of 20 characters long but better safe than sorry
+            // buffer overflow begone!!
+            char startstring [25];
+            char endstring [25];
+
+            // format the string to the desired format, which is YYYY-MM-DDTHH:MM:SS
+            strftime(startstring, 24, "%FT%T", localtime(&options.event_start));
+            strftime(endstring, 24, "%FT%T", localtime(&options.event_end));
+
+            payload.Add({"event_start", startstring});
+            payload.Add({"event_end", endstring});
+        }
+
+        if (type == "image") {
+            payload.Add({"kind", "image"});
+            payload.Add({"url", _upload(contents)});
+        } else if (type == "video") {
+            payload.Add({"kind", "video"});
+            payload.Add({"url", _upload(contents)});
+        } else {
+            throw std::invalid_argument("Post type must be \"image\" or \"video\", not " + type + ". To make a text post, use post().");
+        }
+
+        nlohmann::json response = _redditinstance->_sendrequest("POST", "/api/submit", payload);
+        if (!response["status"].is_null()) {
+            throw errors::CommunicationError("The server gave a malformed response while attempting to make a post.");
+        }
+        if (!response["success"]) {
+
+            //server responds with a jquery object
+            std::string error = response["jquery"][10][3][0];
+            std::string description = response["jquery"][14][3][0];
+
+            if (description == "you should check that url") {
+                // uploaded a bad image/nonexistent file
+                throw errors::PostingError("Failed to upload " + contents + ".");
+            }
+
+            throw errors::PostingError("The following error was encountered when attempting to post: \"" +
+                            error +
+                            "\" - \"" +
+                            description +
+                            "\"");
+        }
     }
 
     Subreddit & Subreddit::subscribe (bool skip_initial_defaults) {
