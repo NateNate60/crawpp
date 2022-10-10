@@ -1,5 +1,6 @@
 VERSION = 0.2alpha-1
 
+COMPILER = g++
 INCLUDEPATH = ./include
 STANDARD = c++17
 SOURCE = ./crawpp
@@ -15,25 +16,25 @@ libcrawpp.a: $(OBJECTS) $(INCLUDE)/crawexceptions.hpp
 	ar crf libcrawpp.a $(OBJECTS)
 
 Reddit.o: $(SOURCE)/Reddit.cpp $(INCLUDE)/Reddit.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Reddit.cpp
+	$(COMPILER) $(ARGS) $(SOURCE)/Reddit.cpp
 
 Redditor.o: $(SOURCE)/Redditor.cpp $(INCLUDE)/Redditor.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Redditor.cpp
+	$(COMPILER) $(ARGS) $(SOURCE)/Redditor.cpp
 
 Subreddit.o: $(SOURCE)/Subreddit.cpp $(INCLUDE)/Subreddit.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Subreddit.cpp
+	$(COMPILER) $(ARGS) $(SOURCE)/Subreddit.cpp
 
 Post.o: $(SOURCE)/Post.cpp $(INCLUDE)/Post.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Post.cpp
+	$(COMPILER) $(ARGS) $(SOURCE)/Post.cpp
 
 Comment.o: $(SOURCE)/Comment.cpp $(INCLUDE)/Comment.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Comment.cpp
+	$(COMPILER) $(ARGS) $(SOURCE)/Comment.cpp
 
 Submission.o: $(SOURCE)/Submission.cpp $(INCLUDE)/Submission.h $(INCLUDE)/crawexceptions.hpp
-	g++ $(ARGS) $(SOURCE)/Submission.cpp
+	$(COMPILER) $(ARGS) $(SOURCE)/Submission.cpp
 
 a.out: test.cpp libcrawpp.a
-	g++ $(EXEARGS) -L. test.cpp -lcrawpp -lcpr
+	$(COMPILER) $(EXEARGS) -L. test.cpp -lcrawpp -lcpr
 
 install: libcrawpp.a
 	cp libcrawpp.a /usr/local/lib
