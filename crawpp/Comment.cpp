@@ -21,6 +21,7 @@ namespace CRAW {
         }
         depth = data["depth"].get<int>();
         content = data["body"].get<std::string>();
+        selftext = content;
 
         awards = std::vector<Award> ();
         for (auto & i : data["all_awardings"]) {

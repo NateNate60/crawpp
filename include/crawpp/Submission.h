@@ -53,9 +53,16 @@ namespace CRAW {
             std::string type;
 
             /**
-			The contents of the submission
+             * The contents of the submission. This is the selftext for text posts, or the URL for image posts.
+             * @note Image posts can now also contain selftext. Check Submission.selftext as well.
 			*/
             std::string content;
+
+            /**
+             * The selftext of the submission.
+             * @note Image posts can now also contain selftext. The image URL is in Submission.content.
+             */
+            std::string selftext;
 
             /**
 			The name of the subreddit that the submission was made in. Use subreddit() instead to get a Subreddit instance

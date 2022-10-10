@@ -26,10 +26,12 @@ namespace CRAW {
             edited = 0;
         }
 
+        selftext = data["selftext"].get<std::string>();
+
         if (!data.contains("post_hint")) {
             // text posts have no hint
             type = "text";
-            content = data["selftext"].get<std::string>();
+            content = selftext;
         } else {
             type = data["post_hint"].get<std::string>();
             content = data["url"].get<std::string>();
