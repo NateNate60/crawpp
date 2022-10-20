@@ -75,3 +75,9 @@ void Redditor::unfollow () {
 
     _redditinstance->_sendrequest("POST", "/api/subscribe", body.dump());
 }
+
+void Redditor::block () {
+    nlohmann::json body;
+    body["name"] = username;
+    _redditinstance->_sendrequest("POST", "/api/block_user", cpr::Payload{{"name", username}});
+}

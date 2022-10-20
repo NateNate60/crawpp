@@ -72,9 +72,21 @@ namespace CRAW {
              * Follow this Redditor, which is the same as subscribing to their user subreddit
             */
             void follow ();
+
             /** 
              * Unfollow this Redditor
             */
             void unfollow ();
+
+            /**
+             * @brief Block this Redditor (non-functional).
+             * 
+             * @note Attempting to view a user's profile after they've been blocked will result
+             * in AuthorisationError. This behaviour is part of Reddit.
+             * 
+             * @warning Due to limitations in the scope of the token issued by Reddit this method currently
+             * does not work.
+             */
+            void block ();
     };
 }
