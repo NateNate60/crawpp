@@ -51,7 +51,7 @@ namespace CRAW {
                                                 {"X-Amz-Algorithm", fields[3]["value"].get<std::string>()},
                                                 {"X-Amz-Date", fields[4]["value"].get<std::string>()},
                                                 {"success_action_status", fields[5]["value"].get<std::string>()},
-                                                {"content-type", fields[6]["value"].get<std::string>()},
+                                                {"Content-Type", fields[6]["value"].get<std::string>()},
                                                 {"x-amz-storage-class", fields[7]["value"].get<std::string>()},
                                                 {"x-amz-meta-ext", fields[8]["value"].get<std::string>()},
                                                 {"policy", fields[9]["value"].get<std::string>()},
@@ -258,16 +258,22 @@ namespace CRAW {
             throw errors::PostingError("A time zone was not specified.");
         }
         cpr::Payload payload = {{"title", title}, 
-                                {"text", contents}, {"url", contents},
-                                {"ad", std::to_string(options.ad)},
-                                {"collection_id", options.collection_id},
-                                {"flair_id", options.flair_id},
-                                {"kind", options.type == "text" ? "self" : "link"},
-                                {"nsfw", std::to_string(options.nsfw)},
-                                {"resubmit", std::to_string(options.resubmit)},
-                                {"sendreplies", std::to_string(options.get_inbox_replies)},
-                                {"spoiler", std::to_string(options.spoiler)},
-                                {"sr", name}};
+                                {"api_type", "json"},
+                                {"show_error_list", "true"},
+                                {"original_content", options.oc ? "true" : "false"},
+                                {"validate_on_submit", "true"},
+                                {"nsfw", options.nsfw ? "true" : "false"},
+                                {"sendreplies", options.get_inbox_replies ? "true" : "false"},
+                                {"spoiler", options.spoiler ? "true" : "false"},
+                                {"post_to_twitter", "false"},
+                                {"sr", name},
+                                {"submit_type", "subreddit"}};
+        if (options.collection_id != "") {
+            payload.Add({"collection_id", options.collection_id});
+        }
+        if (options.flair_id != "") {
+            payload.Add({"flair_id", options.flair_id});
+        }
         if (options.event_start != 0) {
 
             // It's only a maximum of 20 characters long but better safe than sorry
@@ -289,6 +295,7 @@ namespace CRAW {
         } else if (type == "video") {
             payload.Add({"kind", "video"});
             payload.Add({"url", _upload(contents)});
+            payload.Add({"video_poster_url", _upload("./blank.png")});
         } else {
             throw std::invalid_argument("Post type must be \"image\" or \"video\", not " + type + ". To make a text post, use post().");
         }
