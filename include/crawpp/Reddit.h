@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "crawpp/CRAWObject.h"
+#include "crawpp/ListingPage.hpp"
 
 namespace CRAW {
     // Forward-declarations of classes to avoid having header files #include each other
@@ -16,7 +17,7 @@ namespace CRAW {
     class Subreddit;
     class Post;
     class Comment;
-
+    class Message;
 
     /**
     @brief Represents the user's session with Reddit.
@@ -72,6 +73,7 @@ namespace CRAW {
             friend class Submission;
             friend class Subreddit;
             friend class Post;
+            friend class Message;
         public:
             /**
 			Whether the session is authenticated
@@ -158,5 +160,24 @@ namespace CRAW {
              * @return std::multiset<std::string> of subreddit names which begin with the query
              */
             std::multiset<std::string> search (const std::string & query, bool exact = false, bool nsfw = false, bool autocomplete = true, int limit = 5);
+
+            /**
+             * Returns the contents of the current user's inbox.
+             * 
+             * If desired, it is possible to flip through pages of listings by passing in a pointer to a ListingPage struct to the
+             * listingpage argument, and then specifying whether to return the page after that page or before that page in the direction
+             * argument.
+             * 
+             * @param listingpage A ListingPage struct, which can be used to flip forwards/backwards through pages of
+             * listings (defaut: a blank struct, which means the first page). If provided, then the ListingPage for the page returned will
+             * be stored at listingpage. To return the first page, initialise a blank ListingPage object and pass
+             * the address of that. The ListingPage will also be updated to refer to the first page, so that the second page can be
+             * retrieved by passing it to another posts() call. If only the first page is desired, this argument may be omitted, but calling
+             * this function will always return the first page.
+             * @param direction Whether to return the page after the page provided in listingpage, or the page before
+             * (either "after" or "before", default: "after"). Ignored if listingpage is not provided (or blank).
+             * @return std::vector of Message objects in the inbox
+            */
+            std::vector<Message> inbox (ListingPage & listingpage, const std::string & direction = "after");
     };
 }
