@@ -56,6 +56,9 @@ namespace CRAW {
         /// Whether the post contains spoilers (e.g. plot details of a newly-released film, default: false)
         bool spoiler;
 
+        /// Whether to mark the post as original content
+        bool oc;
+
         PostOptions () {
             ad = false;
             collection_id = "";

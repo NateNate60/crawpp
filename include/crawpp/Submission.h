@@ -2,7 +2,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-#include "crawpp/Reddit.h"
+#include "crawpp/Redditor.h"
 #include "crawpp/CRAWObject.h"
 #include "crawpp/Award.hpp"
 
