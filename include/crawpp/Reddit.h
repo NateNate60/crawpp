@@ -162,12 +162,14 @@ namespace CRAW {
             std::multiset<std::string> search (const std::string & query, bool exact = false, bool nsfw = false, bool autocomplete = true, int limit = 5);
 
             /**
-             * Returns the contents of the current user's inbox.
+             * Returns the contents of the current user's inbox, which includes PMs, modmail, sent items, and comment or post replies.
              * 
              * If desired, it is possible to flip through pages of listings by passing in a pointer to a ListingPage struct to the
              * listingpage argument, and then specifying whether to return the page after that page or before that page in the direction
              * argument.
              * 
+             * @param filter Either "inbox"/"all" to return all inbox items, "unread" for only unread items, "sent" for sent items, 
+             * or "message" for private messages (default: "inbox")
              * @param listingpage A ListingPage struct, which can be used to flip forwards/backwards through pages of
              * listings (defaut: a blank struct, which means the first page). If provided, then the ListingPage for the page returned will
              * be stored at listingpage. To return the first page, initialise a blank ListingPage object and pass
@@ -178,6 +180,6 @@ namespace CRAW {
              * (either "after" or "before", default: "after"). Ignored if listingpage is not provided (or blank).
              * @return std::vector of Message objects in the inbox
             */
-            std::vector<Message> inbox (ListingPage & listingpage, const std::string & direction = "after");
+            std::vector<Message> inbox (const std::string & filter = "inbox", ListingPage listingpage = ListingPage(), const std::string & direction = "after");
     };
 }
