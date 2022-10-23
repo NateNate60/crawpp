@@ -11,6 +11,8 @@ namespace CRAW {
 
     /**
      * Represents an object in a user's inbox
+     * 
+     * @warning Do not directly instantiate this class. Instead, it should only be obtained through Reddit.inbox().
      */
     class Message : public CRAWObject {
         public:
@@ -53,7 +55,7 @@ namespace CRAW {
             /**
              * The subject of the message
              */
-            std::string message;
+            std::string subject;
 
             /**
              * The body (contents) of the message
@@ -72,8 +74,16 @@ namespace CRAW {
 
             /**
              * The children of this message (i.e. the replies to a private message)
+             * 
+             * @note Only the root message 
             */
             std::vector<Message> children;
+
+            /**
+             * Initialise a new Message instance with the given data
+             * @param data The JSON "data" field of the response
+            */
+            Message (const nlohmann::json & data);
 
             /**
              * Reply to a message.

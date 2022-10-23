@@ -10,4 +10,5 @@ header files to make it easier to test this library.
 #include "crawpp/Submission.h"
 #include "crawpp/Post.h"
 #include "crawpp/Comment.h"
+#include "crawpp/Message.h"
 #include "crawpp/crawexceptions.hpp"

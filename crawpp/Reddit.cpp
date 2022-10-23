@@ -7,6 +7,8 @@
 #include "crawpp/Post.h"
 #include "crawpp/Redditor.h"
 #include "crawpp/Comment.h"
+#include "crawpp/Message.h"
+#include "crawpp/ListingPage.hpp"
 #include "crawpp/crawexceptions.hpp"
 
 namespace CRAW {
@@ -197,4 +199,15 @@ namespace CRAW {
         return results;
     }
 
+    std::vector<Message> Reddit::inbox (const std::string & filter, ListingPage listingpage, const std::string & direction) {
+        if (filter != "inbox" && filter != "sent" && filter != "unread") {
+            throw std::invalid_argument("filter must be either \"inbox\", \"unread\", or \"sent\", not " + filter + ".");
+        }
+        nlohmann::json response = _sendrequest("GET", "/message/" + filter);
+        std::vector<Message> inbox;
+        for (auto & object : response["data"]["children"]) {
+            inbox.emplace_back(Message(object["data"]));
+        }
+        return inbox;
+    }
 }

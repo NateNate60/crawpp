@@ -4,7 +4,7 @@ COMPILER = g++
 INCLUDEPATH = ./include
 STANDARD = c++17
 SOURCE = ./crawpp
-OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o Submission.o
+OBJECTS = Reddit.o Redditor.o Subreddit.o Post.o Comment.o Submission.o Message.o
 HEADERS = $(INCLUDE)/Award.hpp  $(INCLUDE)/Comment.h  $(INCLUDE)/crawexceptions.hpp  $(INCLUDE)/craw.h  $(INCLUDE)/Post.h  $(INCLUDE)/Reddit.h  $(INCLUDE)/Redditor.h  $(INCLUDE)/Submission.h  $(INCLUDE)/Subreddit.h
 INCLUDE = $(INCLUDEPATH)/crawpp
 EXEARGS = -g -I$(INCLUDEPATH) -L$(SOURCE) --std=$(STANDARD)
@@ -32,6 +32,9 @@ Comment.o: $(SOURCE)/Comment.cpp $(INCLUDE)/Comment.h $(INCLUDE)/crawexceptions.
 
 Submission.o: $(SOURCE)/Submission.cpp $(INCLUDE)/Submission.h $(INCLUDE)/crawexceptions.hpp
 	$(COMPILER) $(ARGS) $(SOURCE)/Submission.cpp
+
+Message.o: $(SOURCE)/Message.cpp $(INCLUDE)/Message.h
+	$(COMPILER) $(ARGS) $(SOURCE)/Message.cpp
 
 a.out: test.cpp libcrawpp.a
 	$(COMPILER) $(EXEARGS) -L. test.cpp -lcrawpp -lcpr
