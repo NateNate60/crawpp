@@ -169,7 +169,7 @@ namespace CRAW {
              * argument.
              * 
              * @param filter Either "inbox" to return all inbox items, "unread" for only unread items, "sent" for sent items, 
-             * or "message" for private messages (default: "inbox")
+             * or "messages" for private messages (default: "inbox")
              * @param listingpage A ListingPage struct, which can be used to flip forwards/backwards through pages of
              * listings (defaut: a blank struct, which means the first page). If provided, then the ListingPage for the page returned will
              * be stored at listingpage. To return the first page, initialise a blank ListingPage object and pass

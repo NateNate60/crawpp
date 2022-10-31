@@ -21,7 +21,7 @@ namespace CRAW {
         created = data["created"].get<time_t>();
         children = std::vector<Message>();
         if (!data["replies"].is_string()) { // if there are no children, this value is "" instead of being an object
-            for (auto & object : data["children"]) {
+            for (auto & object : data["replies"]["data"]["children"]) {
                 //recursively add children to the vector
                 //this has a max depth of 1, because children can't also have children
                 children.emplace_back(Message(object["data"]));

@@ -200,8 +200,8 @@ namespace CRAW {
     }
 
     std::vector<Message> Reddit::inbox (const std::string & filter, ListingPage listingpage, const std::string & direction) {
-        if (filter != "inbox" && filter != "sent" && filter != "unread") {
-            throw std::invalid_argument("filter must be either \"inbox\", \"unread\", or \"sent\", not " + filter + ".");
+        if (filter != "inbox" && filter != "sent" && filter != "unread" && filter != "messages") {
+            throw std::invalid_argument("filter must be either \"inbox\", \"unread\", \"sent\", or \"messages\" not " + filter + ".");
         }
         nlohmann::json response = _sendrequest("GET", "/message/" + filter);
         std::vector<Message> inbox;
