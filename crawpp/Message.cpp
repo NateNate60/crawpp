@@ -5,7 +5,8 @@
 #include "crawpp/Redditor.h"
 
 namespace CRAW {
-    Message::Message(const nlohmann::json & data) {
+    Message::Message(const nlohmann::json & data, Reddit * redditinstance) {
+        _redditinstance = redditinstance;
         read = data["new"].get<bool>();
         subredditname = data["subreddit"].is_null() ? "" : data["subreddit"].get<std::string>();
         authorname = data["author"].get<std::string>();
@@ -24,7 +25,7 @@ namespace CRAW {
             for (auto & object : data["replies"]["data"]["children"]) {
                 //recursively add children to the vector
                 //this has a max depth of 1, because children can't also have children
-                children.emplace_back(Message(object["data"]));
+                children.emplace_back(Message(object["data"], redditinstance));
             }
         }
     }
@@ -35,7 +36,6 @@ namespace CRAW {
 
     void Message::reply (const std::string & contents) {
         nlohmann::json response = _redditinstance->_sendrequest("POST", "/api/comment", cpr::Payload{{"thing_id", fullname}, {"text", contents}});
-        std::string c = response.dump();
     }
 
     void Message::mark_read () {

@@ -83,7 +83,7 @@ namespace CRAW {
              * Initialise a new Message instance with the given data
              * @param data The JSON "data" field of the response
             */
-            Message (const nlohmann::json & data);
+            Message (const nlohmann::json & data, Reddit * redditinstance);
 
             /**
              * Reply to a message.

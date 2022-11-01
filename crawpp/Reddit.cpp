@@ -206,7 +206,7 @@ namespace CRAW {
         nlohmann::json response = _sendrequest("GET", "/message/" + filter);
         std::vector<Message> inbox;
         for (auto & object : response["data"]["children"]) {
-            inbox.emplace_back(Message(object["data"]));
+            inbox.emplace_back(Message(object["data"], this));
         }
         return inbox;
     }
